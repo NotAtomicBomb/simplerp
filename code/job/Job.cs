@@ -42,15 +42,15 @@ namespace MyGame
 			return $"{Name} {Description} {FormattedWage}";
 		}
 
-		public static void SwitchJob(Pawn pawn, Job job)
+		public static void SwitchJob(Player player, Job job)
 		{
 			bool isJobFull = (job.CurrentNumberOfPlayer + 1) > job.MaxPlayers;
 
-			if (pawn != null && job.MaxPlayers != 0 ) {
+			if ( player != null && job.MaxPlayers != 0 ) {
 				if (!isJobFull)
 				{
-					pawn.Job.CurrentNumberOfPlayer -= 1;
-					pawn.Job = job;
+					player.Job.CurrentNumberOfPlayer -= 1;
+					player.Job = job;
 					job.CurrentNumberOfPlayer++;
 				}
 				else
@@ -58,9 +58,9 @@ namespace MyGame
 					Log.Warning( "Job is full." );
 				}
 			}
-			else if (pawn != null)
+			else if ( player != null)
 			{
-				pawn.Job = job;
+				player.Job = job;
 				job.CurrentNumberOfPlayer++;
 			}
 		}
