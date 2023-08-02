@@ -12,15 +12,15 @@ namespace MyGame
 		/// <summary>
 		/// Name of the job.
 		/// </summary>
-		public virtual string Name { get; set; }
+		public string Name { get; set; }
 		/// <summary>
 		/// Description of the job.
 		/// </summary>
-		public virtual string Description { get; set; }
+		public string Description { get; set; }
 		/// <summary>
 		/// The max amount of players that can have the job.
 		/// </summary>
-		public virtual int MaxPlayers { get; } = 0;
+		public int MaxPlayers { get; set;  } = 0;
 		/// <summary>
 		/// The current number of players in the job.
 		/// </summary>
@@ -28,7 +28,7 @@ namespace MyGame
 		/// <summary>
 		/// How much the job will give per pay period.
 		/// </summary>
-		public virtual int Wage { get; set; }
+		public int Wage { get; set; }
 		/// <summary>
 		/// The wage in proper string format.
 		/// </summary>
@@ -44,8 +44,24 @@ namespace MyGame
 
 		public static void SwitchJob(Pawn pawn, Job job)
 		{
-			if (pawn != null) { 
+			bool isJobFull = (job.CurrentNumberOfPlayer + 1) > job.MaxPlayers;
 
+			if (pawn != null && job.MaxPlayers != 0 ) {
+				if (!isJobFull)
+				{
+					pawn.Job.CurrentNumberOfPlayer -= 1;
+					pawn.Job = job;
+					job.CurrentNumberOfPlayer++;
+				}
+				else
+				{
+					Log.Warning( "Job is full." );
+				}
+			}
+			else if (pawn != null)
+			{
+				pawn.Job = job;
+				job.CurrentNumberOfPlayer++;
 			}
 		}
 

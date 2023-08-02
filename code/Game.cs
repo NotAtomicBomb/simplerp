@@ -42,6 +42,7 @@ public partial class MyGame : Sandbox.GameManager
 		client.Pawn = pawn;
 		pawn.Respawn();
 		pawn.DressFromClient( client );
+		Job.SwitchJob(pawn, Job.None );
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one
