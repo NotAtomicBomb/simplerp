@@ -60,6 +60,8 @@ public partial class Pawn : AnimatedEntity
 
 	public override Ray AimRay => new Ray( EyePosition, EyeRotation.Forward );
 
+	public Job Job { get; set; } = Job.None;
+
 	/// <summary>
 	/// Called when the entity is first created 
 	/// </summary>

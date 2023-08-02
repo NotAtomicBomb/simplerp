@@ -7,7 +7,7 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "Resources": null,
+  "Resources": "*.json\n/ui/*",
   "MenuResources": null,
   "HasCode": true,
   "CodePath": "/code/",
@@ -30,6 +30,7 @@
     "HttpAllowList": null,
     "SavedGames": true,
     "MapDependentSaves": false,
-    "SaveFormatVersion": 1001
+    "SaveFormatVersion": 1001,
+    "TickRate": 50
   }
 }
