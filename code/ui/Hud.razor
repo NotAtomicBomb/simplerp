@@ -5,16 +5,18 @@
 @inherits RootPanel
 @attribute [StyleSheet]
 
+
 <root>
     <ChatBox/>
     <VoiceList/>
 
     <div class="header">
-        <label>Shooter Game</label>
-        <label class="subtitle">A template to kick start the production of your own games.</label>
+        <label>@Game.LocalClient.Name</label>
+        <label>@Game.LocalPawn.Health</label>
     </div>
 </root>
 
 @code
 {
+
 }
