@@ -9,29 +9,35 @@ namespace MyGame
 {
 	internal class ConsoleCommands
 	{
-		[ConCmd.Client("switch_job")]
+		/// <summary>
+		/// A command that allows the player to switch jobs.
+		/// </summary>
+		/// <param name="jobName">The job's string name you want to switch to.</param>
+		[ConCmd.Server("switch_job")]
 		public static void SwitchJob(string jobName)
 		{
-			
-			Player player = Player.GetPlayer(Game.LocalClient.SteamId);
-			Log.Info(player); 
+			// The client calling the command.
+			IClient callingClient = ConsoleSystem.Caller;
+			Player player = Player.GetPlayer(callingClient.SteamId );
 			Job newJob = Job.Jobs.Find( job => job.Name == jobName );
-			Log.Info( newJob );
 			if ( newJob != null && player != null )
 			{
 				player.SwitchJob( newJob );
-				Log.Info( player );
-				Log.Warning( "Job switched" );
 			}
 				
 			
 		}
 
-		[ConCmd.Client( "current_job" )]
+		/// <summary>
+		/// A command that allows the player the check their current job.
+		/// </summary>
+		[ConCmd.Server( "current_job" )]
 		public static void CurrentJob()
 		{
-			Player player = Player.GetPlayer( Game.LocalClient.SteamId );
-			Log.Info( player.Job.Name );
+			
+			IClient callingClient = ConsoleSystem.Caller;
+			Player player = Player.GetPlayer( callingClient.SteamId);
+			Log.Info( player.Job );
 		}
 	}
 }

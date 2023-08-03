@@ -8,27 +8,41 @@ using System.Threading.Tasks;
 
 namespace MyGame
 {
-	public partial class Player : BaseNetworkable
+	public partial class Player : Pawn
 	{
-		[Net]
-		public long SteamId { get; set; }
-		[Net]
+		/// <summary>
+		/// The current job of the player.
+		/// </summary>
 		public Job Job { get; set; }
-		public Player(){ }
-		
-		public static Player GetPlayer(long steamId)
+
+		/// <summary>
+		/// Gets the <see cref="Player"/> via the SteamId.
+		/// </summary>
+		/// <param name="steamId">The SteamId of the player you are trying to get. </param>
+		/// <returns><see cref="Player"/></returns>
+		public static Player GetPlayer( long steamId )
 		{
 			IList<Player> players = (GameManager.Current as MyGame).Players;
-			Log.Info( players[0].SteamId );
-			Log.Info( players[0] );
 
-			Player player = players.FirstOrDefault( player => player.SteamId == steamId );
-			Log.Info( player.GetHashCode() );
+			Player player = players.FirstOrDefault( player => player.Client.SteamId == steamId );
 			return player;
-			
-			
 		}
 
+		/// <summary>
+		/// Sets the current info onto the Client.
+		/// </summary>
+		private void SetInfo()
+		{
+			if ( Client != null )
+			{
+				Client.SetValue( "job", Job.ToString() );
+			}
+		}
+
+		/// <summary>
+		/// Switches the players job to the given job.
+		/// </summary>
+		/// <param name="job">The job you want to switch to.</param>
 		public void SwitchJob( Job job )
 		{
 			
@@ -36,28 +50,33 @@ namespace MyGame
 
 			if ( job.MaxPlayers != 0 )
 			{
-				if ( !isJobFull )
+				if ( job != Job )
 				{
-					Job.CurrentNumberOfPlayer -= 1;
-					Job = job;
-					job.CurrentNumberOfPlayer++;
+					if ( !isJobFull )
+					{
+						Job.CurrentNumberOfPlayer -= 1;
+						Job = job;
+						job.CurrentNumberOfPlayer++;
+						Log.Info( $"{Client.Name} switch jobs to {job.Name}." );
+						SetInfo();
+					}
+					else
+					{
+						Log.Warning( "Job is full." );
+					}
 				}
 				else
 				{
-					Log.Warning( "Job is full." );
+					Log.Warning( "You are already that job." );
 				}
 			}
 			else
 			{
+				Log.Info( job.ToString() );
 				Job = job;
-				Log.Info( Job );
 				job.CurrentNumberOfPlayer++;
+				SetInfo();
 			}
-		}
-
-		public void SetSteamId(long steamId )
-		{
-			SteamId = steamId;
 		}
 
 	}
