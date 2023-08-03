@@ -40,16 +40,13 @@ public partial class MyGame : Sandbox.GameManager
 	{
 		base.ClientJoined( client );
 		// Create a pawn for this client to play with
-		Pawn pawn = new Pawn();
-		client.Pawn = pawn;
-		pawn.Respawn();
-		pawn.DressFromClient( client );
-
 		Player player = new();
-		player.SetSteamId(client.SteamId );
+		client.Pawn = player;
 		player.SwitchJob( Job.None );
-
+		player.Respawn();
+		player.DressFromClient( client );
 		Players.Add( player );
+
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one
@@ -60,11 +57,13 @@ public partial class MyGame : Sandbox.GameManager
 		{
 			var tx = randomSpawnPoint.Transform;
 			tx.Position = tx.Position + Vector3.Up * 50.0f; // raise it up
-			pawn.Transform = tx;
+			player.Transform = tx;
 		}
 	}
 
-
+	/// <summary>
+	/// Loads all of the jobs in jobs.json into the list <see cref="Job.Jobs"/>
+	/// </summary>
 	private void LoadJobs()
 	{
 		Job.Jobs.AddRange(FileSystem.Mounted.ReadJson<List<Job>>( "jobs.json" ));
