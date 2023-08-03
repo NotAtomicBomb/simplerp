@@ -13,10 +13,36 @@
     <div class="header">
         <label>@Game.LocalClient.Name</label>
         <label>@Game.LocalPawn.Health</label>
+        <label>@jobName</label>
+        @if (jobWage != "$0")
+        {
+            <label>@jobWage</label>
+        }
     </div>
 </root>
 
 @code
 {
+
+    string[] job;
+    string jobName;
+    string jobWage;
+
+
+    public override void Tick()
+    {
+        base.Tick();
+        try
+        {
+            job = Game.LocalClient.GetValue<string>("job").Split(";");
+            jobName = job[0];
+            jobWage = job[2];
+            StateHasChanged();
+        }
+        catch
+        {
+
+        }
+    }
 
 }
