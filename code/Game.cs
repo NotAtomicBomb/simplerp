@@ -19,6 +19,8 @@ namespace MyGame;
 /// </summary>
 public partial class MyGame : Sandbox.GameManager
 {
+	[Net]
+	public IList<Player> Players { get; set; }
 	/// <summary>
 	/// Called when the game is created (on both the server and client)
 	/// </summary>
@@ -30,7 +32,7 @@ public partial class MyGame : Sandbox.GameManager
 		}
 		LoadJobs();
 	}
-
+	
 	/// <summary>
 	/// A client has joined the server. Make them a pawn to play with
 	/// </summary>
@@ -43,8 +45,11 @@ public partial class MyGame : Sandbox.GameManager
 		pawn.Respawn();
 		pawn.DressFromClient( client );
 
-		Player player = new( client );
-		Job.SwitchJob(player, Job.None );
+		Player player = new();
+		player.SetSteamId(client.SteamId );
+		player.SwitchJob( Job.None );
+
+		Players.Add( player );
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one
@@ -58,6 +63,7 @@ public partial class MyGame : Sandbox.GameManager
 			pawn.Transform = tx;
 		}
 	}
+
 
 	private void LoadJobs()
 	{

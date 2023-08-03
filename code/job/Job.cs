@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Sandbox;
+using System.Collections.Generic;
 
 
 namespace MyGame
 {
-	public class Job
+	public class Job : BaseNetworkable
 	{
 		public static readonly Job None = new Job {Name = "Unemployed", Description = "No Job", Wage = 0};
 
 		public static List<Job> Jobs { get; set; } = new List<Job>();
+
+		public Job() 
+		{
+			
+		}
 
 		/// <summary>
 		/// Name of the job.
@@ -42,28 +48,6 @@ namespace MyGame
 			return $"{Name} {Description} {FormattedWage}";
 		}
 
-		public static void SwitchJob(Player player, Job job)
-		{
-			bool isJobFull = (job.CurrentNumberOfPlayer + 1) > job.MaxPlayers;
-
-			if ( player != null && job.MaxPlayers != 0 ) {
-				if (!isJobFull)
-				{
-					player.Job.CurrentNumberOfPlayer -= 1;
-					player.Job = job;
-					job.CurrentNumberOfPlayer++;
-				}
-				else
-				{
-					Log.Warning( "Job is full." );
-				}
-			}
-			else if ( player != null)
-			{
-				player.Job = job;
-				job.CurrentNumberOfPlayer++;
-			}
-		}
 
 	}
 }

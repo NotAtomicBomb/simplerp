@@ -9,7 +9,7 @@ namespace MyGame
 {
 	internal class ConsoleCommands
 	{
-		[ConCmd.Server("switch_job")]
+		[ConCmd.Client("switch_job")]
 		public static void SwitchJob(string jobName)
 		{
 			
@@ -19,7 +19,7 @@ namespace MyGame
 			Log.Info( newJob );
 			if ( newJob != null && player != null )
 			{
-				Job.SwitchJob( player, newJob );
+				player.SwitchJob( newJob );
 				Log.Info( player );
 				Log.Warning( "Job switched" );
 			}
