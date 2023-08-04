@@ -19,15 +19,16 @@ Hud {
 
             &#salary {
                 color: black;
-                text-shadow: 2px 2px green, 3px 3px green, 4px 4px green;
+                // text-shadow: 2px 2px green, 3px 3px green, 4px 4px green;
+                filter: border-wrap(2px darkgreen);
             }
 
             &#job {
-                text-shadow: 2px 2px darkblue, 3px 3px darkblue, 4px 4px darkblue;
+                filter: border-wrap(2px darkblue);
             }
 
             &#money {
-                text-shadow: 2px 2px darkblue, 3px 3px darkblue, 4px 4px darkblue;
+                filter: border-wrap(2px darkblue);
             }
         }
 
@@ -38,6 +39,10 @@ Hud {
             margin-top: 10px;
 
             label {
+                padding: 1px 0px;
+                text-align: center;
+                background-color: darkred;
+                width: 100%;
                 color: white;
             }
         }
