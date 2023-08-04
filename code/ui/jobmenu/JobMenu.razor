@@ -6,7 +6,7 @@
 @attribute [StyleSheet]
 
 <root>
-    @if (hidden == false) {
+    @if (Hidden == false) {
         <div class="menu-container flex-column">
             <h1 class="center-text header-font">Available Jobs</h1>
             <div class="jobs-container flex-column">
@@ -20,10 +20,13 @@
 
 @code
 {
-    bool hidden = true;
+    public static JobMenu Instance;
+
+   bool Hidden { get; set; } = true;
+
 
     public void ToggleUI() {
-        hidden = !hidden;
+        Hidden = !Hidden;
         StateHasChanged();
     }
 

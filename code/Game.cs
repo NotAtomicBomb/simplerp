@@ -70,6 +70,11 @@ public partial class MyGame : Sandbox.GameManager
 		Players.Remove( player );
 	}
 
+	public override void DoPlayerDevCam( IClient client )
+	{
+		return;
+	}
+
 	/// <summary>
 	/// Loads all of the jobs in jobs.json into the list <see cref="Job.Jobs"/>
 	/// </summary>

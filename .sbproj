@@ -29,10 +29,12 @@
     "CsProjName": "",
     "HttpAllowList": null,
     "SavedGames": true,
-    "MapDependentSaves": false,
+    "MapDependentSaves": true,
     "SaveFormatVersion": 1001,
     "TickRate": 50,
-    "ControlModes": {},
+    "ControlModes": {
+      "Keyboard": true
+    },
     "InputSettings": {
       "Actions": [
         {
@@ -214,6 +216,18 @@
           "GroupName": "Job"
         }
       ]
-    }
+    },
+    "LaunchConfigs": [
+      {
+        "Name": "My New Config",
+        "GameIdent": "gentlemen.simplerp#local",
+        "MapName": "facepunch.square",
+        "MaxPlayers": 1,
+        "GameSettings": {},
+        "Addons": "",
+        "PreLaunchCommand": "",
+        "PostLaunchCommand": "bind f2 \u0022\u0022"
+      }
+    ]
   }
 }
