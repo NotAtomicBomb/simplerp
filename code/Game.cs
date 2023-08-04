@@ -63,6 +63,13 @@ public partial class MyGame : Sandbox.GameManager
 		}
 	}
 
+	public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
+	{
+		base.ClientDisconnect( cl, reason );
+		Player player = Player.GetPlayer( cl.SteamId );
+		Players.Remove( player );
+	}
+
 	/// <summary>
 	/// Loads all of the jobs in jobs.json into the list <see cref="Job.Jobs"/>
 	/// </summary>
