@@ -2,22 +2,17 @@
 @using Sandbox.UI;
 
 @namespace MyGame
-@inherits RootPanel
 @attribute [StyleSheet]
 
 
 <root>
-    <ChatBox/>
-    <VoiceList/>
-
-    <div class="header">
-        <label>@Game.LocalClient.Name</label>
-        <label>@Game.LocalPawn.Health</label>
-        <label>@jobName</label>
-        @if (jobWage != "$0")
-        {
-            <label>@jobWage</label>
-        }
+    <div class="info">
+        <label id="salary">Salary: @jobWage</label>    
+        <label id="job">Job: @jobName</label>
+        <label id="money">Wallet: $0</label>
+        <div id="health-bar">
+        <label id="health">@Game.LocalPawn.Health</label>
+        </div>
     </div>
 </root>
 
@@ -41,8 +36,9 @@
         }
         catch
         {
-
+            // Something could go here
         }
+
     }
 
 }
