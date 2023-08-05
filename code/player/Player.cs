@@ -1,4 +1,4 @@
-﻿using Sandbox;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,17 @@ namespace MyGame
 		/// The current job of the player.
 		/// </summary>
 		public Job Job { get; set; }
+
+		/// <summary>
+		/// The money of the player.
+		/// </summary>
+		[Net]
+		public long Money { get; protected set; } = 0;
+
+		private string FormattedMoney 
+		{
+			get => Money.ToString("C0");
+		}
 
 		/// <summary>
 		/// Gets the <see cref="Player"/> via the SteamId.
