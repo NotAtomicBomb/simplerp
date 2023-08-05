@@ -1,0 +1,46 @@
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace MyGame
+@inherits RootPanel
+@attribute [StyleSheet]
+
+@if (hidden == false)
+{
+    <root>
+        <div class="playerlist-container center">
+            <h1 class="center">Players</h1>
+            <div class="line">
+                @foreach (Player player in MyGame.Players) {
+                    <div class="player-container">
+                        <h3>@player.Username</h3>
+                        <h3>@player.Ping
+                    </div>
+                }
+            </div>
+        </div>
+    </root>
+}
+
+@code
+{
+    bool hidden = true;
+
+    private void TogglePlayerList()
+    {
+        hidden = !hidden;
+        StateHasChanged();
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if (Input.Pressed("TogglePlayerlist"))
+        {
+            Log.Info("Hidden: " + hidden);
+            TogglePlayerList();
+        }
+    }
+
+}

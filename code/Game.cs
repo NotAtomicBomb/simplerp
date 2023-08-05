@@ -30,6 +30,7 @@ public partial class MyGame : Sandbox.GameManager
 		{
 			Game.RootPanel = new Hud();
 			Game.RootPanel = new JobMenu();
+			Game.RootPanel = new PlayerList();
 		}
 
 		LoadJobs();
@@ -44,6 +45,8 @@ public partial class MyGame : Sandbox.GameManager
 		// Create a pawn for this client to play with
 		Player player = new();
 		client.Pawn = player;
+		player.Username = client.Name;
+		player.Ping = client.Ping;
 		player.SwitchJob( Job.None );
 		player.Respawn();
 		player.DressFromClient( client );

@@ -11,6 +11,19 @@ namespace MyGame
 	public partial class Player : Pawn
 	{
 		public bool FirstTimeJoining { get; internal set; } = true;
+
+
+		/// <summary>
+		/// The players username
+		/// </summary
+		public string Username { get; set; }
+
+
+		/// <summary>
+		/// The players ping
+		/// </summary
+		public int Ping { get; set; }
+
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
@@ -22,7 +35,7 @@ namespace MyGame
 		[Net]
 		public long Money { get; protected set; } = 0;
 
-		private string FormattedMoney 
+		private string FormattedMoney
 		{
 			get => Money.ToString("C0");
 		}

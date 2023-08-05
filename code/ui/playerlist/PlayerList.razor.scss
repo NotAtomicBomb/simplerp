@@ -1,0 +1,21 @@
+.playerlist-container {
+    margin-top: 3%;
+    height: 80%;
+    width: 60%;
+    background-color: rgba(black, 0.5);
+    backdrop-filter: blur(10px);
+    color: white;
+
+    h1 {
+        font-family: "Segoe UI";
+        font-size: 35px;
+        font-weight: bold;
+        text-decoration: underline;
+        padding: 10px;
+    }
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
