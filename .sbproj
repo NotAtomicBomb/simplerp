@@ -194,12 +194,6 @@
           "GroupName": "Other"
         },
         {
-          "Name": "Score",
-          "KeyboardCode": "tab",
-          "GamepadCode": "SwitchLeftMenu",
-          "GroupName": "Other"
-        },
-        {
           "Name": "Menu",
           "KeyboardCode": "Q",
           "GamepadCode": "SwitchRightMenu",
@@ -211,22 +205,27 @@
           "GroupName": "Other"
         },
         {
-          "Name": "JobToggle",
-          "KeyboardCode": "j",
+          "Name": "jobtoggle",
+          "KeyboardCode": "M",
           "GroupName": "Job"
+        },
+        {
+          "Name": "playerlisttoggle",
+          "KeyboardCode": "TAB",
+          "GroupName": "Other"
         }
       ]
     },
     "LaunchConfigs": [
       {
-        "Name": "My New Config",
+        "Name": "Main",
         "GameIdent": "gentlemen.simplerp#local",
-        "MapName": "facepunch.square",
+        "MapName": "facepunch.construct",
         "MaxPlayers": 1,
         "GameSettings": {},
         "Addons": "",
         "PreLaunchCommand": "",
-        "PostLaunchCommand": "bind f2 \u0022\u0022"
+        "PostLaunchCommand": ""
       }
     ]
   }
