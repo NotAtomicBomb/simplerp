@@ -1,4 +1,4 @@
-using Sandbox;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +78,8 @@ namespace MyGame
 			{
 				Client.SetValue( "job", Job.ToString() );
 				Client.SetValue( "money", FormattedMoney );
+				PlayerInfo.UpdateInfo(To.Single(this)); // Ignore the error, it works.
+				PlayerList.UpdateInfo(); // Ignore the error, it works.
 			}
 		}
 

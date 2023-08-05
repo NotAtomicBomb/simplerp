@@ -19,7 +19,8 @@
 
 @code
 {
-    float MaxHealth = Game.LocalPawn.Health ;
+    static PlayerInfo Instance;
+    public float MaxHealth = Game.LocalPawn.Health ;
     int Health = 100;
     string healthPosition = "150px";
     string jobName = "";
@@ -31,14 +32,29 @@
     public override void Tick()
     {
         base.Tick();
-        Health = (int)Game.LocalPawn.Health;
-        healthPosition = $"{150 - Health.ToString().Length * 5}px";
-        string[] job = Game.LocalClient.GetValue<string>("job").Split(";");
-        jobName = job[0];
-        jobWage = job[2];
-        money = Game.LocalClient.GetValue<string>("money");
-        healthAsPercent = (Health / (MaxHealth / 100)).ToString() + "%";
-        StateHasChanged();
+
+        if(Instance == null)
+        {
+            Instance = this;
+            PlayerInfo.UpdateInfo();
+        }
+
+    }
+
+    [ClientRpc]
+    public static void UpdateInfo()
+    {
+        if (Instance != null)
+        {
+            string[] job = Game.LocalClient.GetValue<string>("job").Split(";");
+            Instance.jobName = job[0];
+            Instance.jobWage = job[2];
+            Instance.money = Game.LocalClient.GetValue<string>("money");
+            Instance.Health = (int)Game.LocalPawn.Health;
+            Instance.healthPosition = $"{150 - Instance.Health.ToString().Length * 5}px";
+            Instance.healthAsPercent = (Instance.Health / (Instance.MaxHealth / 100)).ToString() + "%";
+            Instance.StateHasChanged();
+        }
     }
 
 }
