@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace MyGame
 {
-	public class Job : BaseNetworkable
+	public partial class Job : BaseNetworkable
 	{
 		/// <summary>
 		/// Default job.
@@ -16,11 +16,11 @@ namespace MyGame
 		/// </summary>
 		public static List<Job> Jobs { get; set; } = new List<Job>();
 
-
 		/// <summary>
 		/// Name of the job.
-		/// </summary>
+		/// </summary>		
 		public string Name { get; set; }
+
 		/// <summary>
 		/// Description of the job.
 		/// </summary>

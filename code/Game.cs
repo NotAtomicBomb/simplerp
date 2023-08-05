@@ -42,14 +42,13 @@ public partial class MyGame : Sandbox.GameManager
 	public override void ClientJoined( IClient client )
 	{
 		base.ClientJoined( client );
+
 		// Create a pawn for this client to play with
 		Player player = new();
 		client.Pawn = player;
-		player.Username = client.Name;
-		player.Ping = client.Ping;
-		player.SwitchJob( Job.None );
 		player.Respawn();
 		player.DressFromClient( client );
+		player.SwitchJob( Job.None );
 		Players.Add( player );
 		Log.Info( player );
 

@@ -1,4 +1,4 @@
-﻿using Sandbox;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MyGame
-{
+{ 
 	public partial class Player : Pawn
 	{
 		public bool FirstTimeJoining { get; internal set; } = true;
-
-
-		/// <summary>
-		/// The players username
-		/// </summary
-		public string Username { get; set; }
-
-
-		/// <summary>
-		/// The players ping
-		/// </summary
-		public int Ping { get; set; }
 
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
 		public Job Job { get; set; }
+
 
 		/// <summary>
 		/// The money of the player.
