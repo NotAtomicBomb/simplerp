@@ -48,6 +48,7 @@ public partial class MyGame : Sandbox.GameManager
 		player.Respawn();
 		player.DressFromClient( client );
 		Players.Add( player );
+		Log.Info( player );
 
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();

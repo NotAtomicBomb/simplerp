@@ -67,7 +67,7 @@ public partial class Pawn : AnimatedEntity
 	public override void Spawn()
 	{
 		SetModel( "models/citizen/citizen.vmdl" );
-		Health = 100;
+		Health = 100f;
 		EnableDrawing = true;
 		EnableHideInFirstPerson = true;
 		EnableShadowInFirstPerson = true;

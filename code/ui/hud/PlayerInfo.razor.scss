@@ -36,13 +36,21 @@ Hud {
             background-color: black;
             width: 300px;
             margin-top: 10px;
+            height: 40px;
+
+            #hp-bar {
+                width: 100%;
+                background-color: darkred;
+                transition: width 250ms;
+            }
 
             label {
                 padding: 1px 0px;
                 text-align: center;
-                background-color: darkred;
-                width: 100%;
                 color: white;
+                height: auto;
+                position: absolute;
+                left: 140px;
             }
         }
     }

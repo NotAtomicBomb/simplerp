@@ -9,36 +9,35 @@
     <div class="info">
         <label id="salary">Salary: @jobWage</label>    
         <label id="job">Job: @jobName</label>
-        <label id="money">Wallet: $0</label>
+        <label id="money">Wallet: @money</label>
         <div id="health-bar">
-        <label id="health">@Game.LocalPawn.Health</label>
+            <div id="hp-bar" style="width:@healthAsPercent"></div>
+        <label id="health" style="left:@healthPosition">@Health</label>
         </div>
     </div>
 </root>
 
 @code
 {
-
-    string[] job;
-    string jobName;
-    string jobWage;
+    float MaxHealth = Game.LocalPawn.Health ;
+    int Health = 100;
+    string healthPosition = "150px";
+    string jobName = "";
+    string jobWage = "";
+    string money = "$0";
+    string healthAsPercent = "100%";
 
 
     public override void Tick()
     {
         base.Tick();
-        try
-        {
-            job = Game.LocalClient.GetValue<string>("job").Split(";");
-            jobName = job[0];
-            jobWage = job[2];
-            StateHasChanged();
-        }
-        catch
-        {
-            // Something could go here
-        }
-
+        Health = (int)Game.LocalPawn.Health;
+        healthPosition = $"{150 - Health.ToString().Length * 5}px";
+        string[] job = Game.LocalClient.GetValue<string>("job").Split(";");
+        jobName = job[0];
+        jobWage = job[2];
+        healthAsPercent = (Health / (MaxHealth / 100)).ToString() + "%";
+        StateHasChanged();
     }
 
 }
