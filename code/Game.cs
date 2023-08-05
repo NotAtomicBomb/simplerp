@@ -50,6 +50,12 @@ public partial class MyGame : Sandbox.GameManager
 		Players.Add( player );
 		Log.Info( player );
 
+		if ( player.FirstTimeJoining )
+		{
+			player.AddMoney( 500 );
+			player.FirstTimeJoining = false;
+		}
+
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one

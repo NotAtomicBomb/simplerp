@@ -1,4 +1,4 @@
-using Sandbox;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace MyGame
 {
 	public partial class Player : Pawn
 	{
+		public bool FirstTimeJoining { get; internal set; } = true;
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
