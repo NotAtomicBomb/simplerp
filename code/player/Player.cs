@@ -27,6 +27,33 @@ namespace MyGame
 		}
 
 		/// <summary>
+		/// Add money to the player.
+		/// </summary>
+		/// <param name="money">The money to add to the player.</param>
+		internal void AddMoney( long money )
+		{
+			Money += money;
+			SetInfo();
+		}
+
+		/// <summary>
+		/// Subtracts money from the player.
+		/// </summary>
+		/// <param name="money">The money to subtract from the player.</param>
+		internal bool SubtractMoney( long money )
+		{
+			if( (Money - money) < 0 )
+			{
+				Log.Warning( "Don't have enough money." );
+				return false;
+			}
+
+			Money -= money;
+			SetInfo();
+			return true;
+		}
+
+		/// <summary>
 		/// Gets the <see cref="Player"/> via the SteamId.
 		/// </summary>
 		/// <param name="steamId">The SteamId of the player you are trying to get. </param>
@@ -47,6 +74,7 @@ namespace MyGame
 			if ( Client != null )
 			{
 				Client.SetValue( "job", Job.ToString() );
+				Client.SetValue( "money", FormattedMoney );
 			}
 		}
 

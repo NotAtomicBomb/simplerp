@@ -36,6 +36,7 @@
         string[] job = Game.LocalClient.GetValue<string>("job").Split(";");
         jobName = job[0];
         jobWage = job[2];
+        money = Game.LocalClient.GetValue<string>("money");
         healthAsPercent = (Health / (MaxHealth / 100)).ToString() + "%";
         StateHasChanged();
     }
