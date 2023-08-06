@@ -20,6 +20,7 @@
 @code
 {
     static PlayerInfo Instance;
+    Player localPlayer;
     public float MaxHealth = Game.LocalPawn.Health ;
     int Health = 100;
     string healthPosition = "150px";
@@ -46,10 +47,11 @@
     {
         if (Instance != null)
         {
-            string[] job = Game.LocalClient.GetValue<string>("job").Split(";");
-            Instance.jobName = job[0];
-            Instance.jobWage = job[2];
-            Instance.money = Game.LocalClient.GetValue<string>("money");
+            Instance.localPlayer = (Game.LocalPawn as Player);
+            Job job = Instance.localPlayer.Job;
+            Instance.jobName = job.Name;
+            Instance.jobWage = job.FormattedWage;
+            Instance.money = Instance.localPlayer.FormattedMoney;
             Instance.Health = (int)Game.LocalPawn.Health;
             Instance.healthPosition = $"{150 - Instance.Health.ToString().Length * 5}px";
             Instance.healthAsPercent = (Instance.Health / (Instance.MaxHealth / 100)).ToString() + "%";

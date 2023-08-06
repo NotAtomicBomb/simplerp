@@ -3,6 +3,7 @@ using Sandbox;
 using Sandbox.Internal;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 //
@@ -20,7 +21,11 @@ namespace MyGame;
 public partial class MyGame : Sandbox.GameManager
 {
 	[Net]
-	public IList<Player> Players { get; set; }
+	public IDictionary<string, Player> Players { get; set; }
+
+	[Net]
+	public IDictionary<string, Job> Jobs { get; set; }
+
 	/// <summary>
 	/// Called when the game is created (on both the server and client)
 	/// </summary>
@@ -29,11 +34,16 @@ public partial class MyGame : Sandbox.GameManager
 		if ( Game.IsClient )
 		{
 			Game.RootPanel = new Hud();
-			Game.RootPanel = new JobMenu();
 			Game.RootPanel = new PlayerList();
+			Game.RootPanel = new JobMenu();
 		}
 
-		LoadJobs();
+		if( Game.IsServer )
+		{
+			LoadJobs();
+		}
+		
+		
 	}
 
 	/// <summary>
@@ -49,7 +59,7 @@ public partial class MyGame : Sandbox.GameManager
 		player.Respawn();
 		player.DressFromClient( client );
 		player.SwitchJob( Job.None );
-		Players.Add( player );
+		Players.Add(player.Client.SteamId.ToString() , player );
 		Log.Info( player );
 
 		if ( player.FirstTimeJoining )
@@ -70,13 +80,18 @@ public partial class MyGame : Sandbox.GameManager
 			tx.Position = tx.Position + Vector3.Up * 50.0f; // raise it up
 			player.Transform = tx;
 		}
+
+
 	}
 
 	public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 	{
+		Player player = cl.Pawn as Player;
+		FileSystem.Data.WriteJson<Player>( "playerData", player );
+		Players.Remove( player.Client.SteamId.ToString() );
+
 		base.ClientDisconnect( cl, reason );
-		Player player = Player.GetPlayer( cl.SteamId );
-		Players.Remove( player );
+		
 	}
 
 	public override void DoPlayerDevCam( IClient client )
@@ -85,11 +100,11 @@ public partial class MyGame : Sandbox.GameManager
 	}
 
 	/// <summary>
-	/// Loads all of the jobs in jobs.json into the list <see cref="Job.Jobs"/>
+	/// Loads all of the <see cref="Job"/>s in jobs.json into the list <see cref="Jobs"/>
 	/// </summary>
 	private void LoadJobs()
 	{
-		Job.Jobs.AddRange(FileSystem.Mounted.ReadJson<List<Job>>( "jobs.json" ));
+		Jobs =  FileSystem.Mounted.ReadJson<Dictionary<string, Job>>( "jobs.json" );
 	}
 }
 

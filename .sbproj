@@ -220,7 +220,7 @@
       {
         "Name": "Main",
         "GameIdent": "gentlemen.simplerp#local",
-        "MapName": "facepunch.construct",
+        "MapName": "facepunch.square",
         "MaxPlayers": 1,
         "GameSettings": {},
         "Addons": "",

@@ -11,11 +11,14 @@
         <div class="playerlist-container center">
             <h1 class="center">Players</h1>
             <div class="line">
-                @foreach (Player player in (GameManager.Current as MyGame).Players) {
+                @foreach (Player player in (GameManager.Current as MyGame).Players.Values) {
                     <div class="player-container">
                         <h3>@player.Client.Name</h3>
                         <h3>@player.Client.Ping</h3>
-                        <h3>@GetJob(player)</h3>
+                        @if (player.Job != null)
+                        {
+                            <h3>@player.Job.Name</h3>
+                        }
                     </div>
                 }
             </div>
@@ -28,11 +31,6 @@
     static PlayerList Instance;
 
     bool hidden = true;
-
-    private string GetJob(Player player)
-    {
-        return player.Client.GetValue<string>("job").Split(";")[0];
-    }
 
     private void TogglePlayerList()
     {

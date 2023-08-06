@@ -1,39 +1,68 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using System.Collections.Generic;
 
 @namespace MyGame
 @inherits RootPanel
 @attribute [StyleSheet]
+ @if (Hidden == false)
+{
+    <root>
 
-<root>
-    @if (Hidden == false) {
         <div class="menu-container flex-column">
             <h1 class="center-text header-font">Available Jobs</h1>
             <div class="jobs-container flex-column">
-                @foreach(Job job in Job.Jobs) {
+                @foreach (Job job in currentGame.Jobs.Values)
+                {
                     <h3 class="job-text center-text">@job.Name</h3>
+                    <h4 class="center-text">@job.CurrentNumberOfPlayers/@job.MaxPlayers</h4>
                 }
             </div>
         </div>
-    }
-</root>
+    
+    </root>
+ }
 
 @code
 {
-
+    static JobMenu Instance;
+    MyGame currentGame = (GameManager.Current as MyGame);
     bool Hidden { get; set; } = true;
 
 
     public void ToggleUI() {
+
         Hidden = !Hidden;
+
+        foreach (Job job in currentGame.Jobs.Values)
+        {
+            Log.Info(job.CurrentNumberOfPlayers);
+        }
+
         StateHasChanged();
     }
 
     public override void Tick() {
         base.Tick();
 
-        if (Input.Pressed("jobtoggle")) {
+        if (Input.Pressed("jobtoggle")) 
+        {
             ToggleUI();
+        }
+
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+
+    }
+
+    [ClientRpc]
+    public static void UpdateInfo()
+    {
+        if (Instance != null)
+        {
+            Instance.StateHasChanged();
         }
     }
 

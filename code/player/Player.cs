@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MyGame
@@ -15,16 +16,20 @@ namespace MyGame
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
+		[Net, JsonIgnore]
 		public Job Job { get; set; }
-
 
 		/// <summary>
 		/// The money of the player.
 		/// </summary>
-		[Net]
+		[Net] 
 		public long Money { get; protected set; } = 0;
 
-		private string FormattedMoney
+		/// <summary>
+		/// The money in string format.
+		/// </summary>
+		[JsonIgnore]
+		public string FormattedMoney
 		{
 			get => Money.ToString("C0");
 		}
@@ -63,9 +68,9 @@ namespace MyGame
 		/// <returns><see cref="Player"/></returns>
 		public static Player GetPlayer( long steamId )
 		{
-			IList<Player> players = (GameManager.Current as MyGame).Players;
+			IDictionary<string ,Player> players = (GameManager.Current as MyGame).Players;
 
-			Player player = players.FirstOrDefault( player => player.Client.SteamId == steamId );
+			Player player = players[steamId.ToString()];
 			return player;
 		}
 
@@ -76,10 +81,9 @@ namespace MyGame
 		{
 			if ( Client != null )
 			{
-				Client.SetValue( "job", Job.ToString() );
-				Client.SetValue( "money", FormattedMoney );
 				PlayerInfo.UpdateInfo(To.Single(this)); // Ignore the error, it works.
 				PlayerList.UpdateInfo(); // Ignore the error, it works.
+				JobMenu.UpdateInfo(); // Ignore the error, it works.
 			}
 		}
 
@@ -90,7 +94,7 @@ namespace MyGame
 		public void SwitchJob( Job job )
 		{
 			
-			bool isJobFull = (job.CurrentNumberOfPlayer + 1) > job.MaxPlayers;
+			bool isJobFull = (job.CurrentNumberOfPlayers + 1) > job.MaxPlayers;
 
 			if ( job.MaxPlayers != 0 )
 			{
@@ -98,9 +102,9 @@ namespace MyGame
 				{
 					if ( !isJobFull )
 					{
-						Job.CurrentNumberOfPlayer -= 1;
+						Job.CurrentNumberOfPlayers -= 1;
 						Job = job;
-						job.CurrentNumberOfPlayer++;
+						job.CurrentNumberOfPlayers++;
 						Log.Info( $"{Client.Name} switch jobs to {job.Name}." );
 						SetInfo();
 					}
@@ -118,7 +122,7 @@ namespace MyGame
 			{
 				Log.Info( job.ToString() );
 				Job = job;
-				job.CurrentNumberOfPlayer++;
+				job.CurrentNumberOfPlayers++;
 				SetInfo();
 			}
 		}

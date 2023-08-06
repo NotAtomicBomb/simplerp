@@ -1,9 +1,4 @@
 ﻿using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyGame
 {
@@ -19,25 +14,16 @@ namespace MyGame
 			// The client calling the command.
 			IClient callingClient = ConsoleSystem.Caller;
 			Player player = Player.GetPlayer(callingClient.SteamId );
-			Job newJob = Job.Jobs.Find( job => job.Name == jobName );
+			Job newJob = (GameManager.Current as MyGame).Jobs[jobName];
 			if ( newJob != null && player != null )
 			{
 				player.SwitchJob( newJob );
 			}
-				
+			else
+			{
+				Log.Warning( "Job not found." );
+			}
 			
-		}
-
-		/// <summary>
-		/// A command that allows the player the check their current job.
-		/// </summary>
-		[ConCmd.Server( "current_job" )]
-		public static void CurrentJob()
-		{
-			
-			IClient callingClient = ConsoleSystem.Caller;
-			Player player = Player.GetPlayer( callingClient.SteamId);
-			Log.Info( player.Job );
 		}
 	}
 }

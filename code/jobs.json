@@ -1,14 +1,14 @@
-﻿[
-  {
+﻿{
+  "pc": {
     "Name": "Police Chief",
     "Description": " You are the leader of the police. Save the citizens from crime.",
     "MaxPlayers": 1,
     "Wage": 100
   },
-  {
+  "po": {
     "Name": "Police Officer",
     "Description": "You are the man that stops crime.",
     "MaxPlayers": 5,
     "Wage": 75
   }
-]
+}
