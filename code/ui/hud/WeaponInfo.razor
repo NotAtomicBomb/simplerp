@@ -1,0 +1,50 @@
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace MyGame
+@attribute [StyleSheet]
+
+
+<root>
+    @if (weapon != null)
+    {
+        <div class="info">
+            <h3>@weapon.CurrentAmmo/@weapon.MagSize</h3>
+            <h3>@weapon.Name</h3>
+        </div>
+    }
+</root>
+
+@code
+{
+    static WeaponInfo Instance;
+    Player localPlayer = Game.LocalPawn as Player;
+    Weapon weapon;
+
+
+
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if(Instance == null)
+        {
+            Instance = this;
+            weapon = localPlayer.ActiveWeapon;
+            WeaponInfo.UpdateInfo();
+        }
+        StateHasChanged();
+
+    }
+
+    [ClientRpc]
+    public static void UpdateInfo()
+    {
+        if (Instance != null)
+        {
+            Instance.StateHasChanged();
+        }
+    }
+
+}

@@ -29,6 +29,16 @@ public partial class Weapon : AnimatedEntity
 	public virtual float PrimaryRate => 5.0f;
 
 	/// <summary>
+	/// The max amount of ammout you can have in the gun at any given time.
+	/// </summary>
+	public virtual int MagSize => 12;
+
+	[Net]
+	public int CurrentAmmo { get; set; } = 12;
+	[Net]
+	public int ReserveAmmo { get; set; } = 32;
+
+	/// <summary>
 	/// How long since we last shot this gun.
 	/// </summary>
 	[Net, Predicted] public TimeSince TimeSincePrimaryAttack { get; set; }
@@ -103,6 +113,7 @@ public partial class Weapon : AnimatedEntity
 	/// </summary>
 	public virtual void PrimaryAttack()
 	{
+
 	}
 
 	/// <summary>

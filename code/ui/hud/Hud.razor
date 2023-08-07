@@ -10,6 +10,10 @@
     <ChatBox/>
     <VoiceList/>
     <PlayerInfo/>
+    @if((Game.LocalPawn as Player).ActiveWeapon != null)
+    {
+        <WeaponInfo/>
+    }
 </root>
 
 @code

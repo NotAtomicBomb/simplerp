@@ -1,0 +1,58 @@
+Hud {
+
+    .info {
+        position: absolute;
+        bottom: 0px;
+        left: 93vw;
+        flex-direction: column;
+        padding: 20px;
+        background-color: rgba(black, 0.5);
+        backdrop-filter: blur(10px);
+
+        * {
+            margin: 1px;
+        }
+
+        label {
+            font-family: 'Segoe UI';
+            color: black;
+            font-size: 24px;
+
+            &#salary {
+                color: black;
+                filter: border-wrap(2px darkgreen);
+            }
+
+            &#job {
+                filter: border-wrap(2px darkblue);
+            }
+
+            &#money {
+                filter: border-wrap(2px darkblue);
+            }
+        }
+
+        #health-bar {
+            color: white;
+            background-color: black;
+            width: 300px;
+            margin-top: 10px;
+            height: 40px;
+
+            #hp-bar {
+                width: 100%;
+                background-color: darkred;
+                transition: width 250ms;
+            }
+
+            label {
+                padding: 1px 0px;
+                text-align: center;
+                color: white;
+                height: auto;
+                position: absolute;
+                left: 140px;
+            }
+        }
+    }
+}

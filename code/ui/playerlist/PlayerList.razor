@@ -35,6 +35,7 @@
     private void TogglePlayerList()
     {
         hidden = !hidden;
+        Mouse.Position = new Vector2 { x = Screen.Width / 2, y = Screen.Height / 2 };
         StateHasChanged();
     }
 

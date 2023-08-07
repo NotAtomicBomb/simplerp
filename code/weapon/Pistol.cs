@@ -6,6 +6,14 @@ public partial class Pistol : Weapon
 {
 	public override string ModelPath => "weapons/rust_pistol/rust_pistol.vmdl";
 	public override string ViewModelPath => "weapons/rust_pistol/v_rust_pistol.vmdl";
+	public override int MagSize => 7;
+
+	public override void Spawn()
+	{
+		base.Spawn();
+		CurrentAmmo = 7;
+	}
+
 
 	[ClientRpc]
 	protected virtual void ShootEffects()
@@ -20,9 +28,19 @@ public partial class Pistol : Weapon
 
 	public override void PrimaryAttack()
 	{
-		ShootEffects();
-		Pawn.PlaySound( "rust_pistol.shoot" );
-		ShootBullet( 0.1f, 100, 20, 1 );
+		if ( CurrentAmmo > 0 )
+		{
+			ShootEffects();
+			Pawn.PlaySound( "rust_pistol.shoot" );
+			ShootBullet( 0.1f, 100, 20, 1 );
+
+			CurrentAmmo--;
+		}
+		else
+		{
+			Pawn.PlaySound( "pistol_empty" );
+		}
+		WeaponInfo.UpdateInfo( To.Single( Pawn ) ); // Ignore error, it works.
 	}
 
 	protected override void Animate()
