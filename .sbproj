@@ -221,7 +221,7 @@
         "Name": "Main",
         "GameIdent": "gentlemen.simplerp#local",
         "MapName": "facepunch.square",
-        "MaxPlayers": 1,
+        "MaxPlayers": 64,
         "GameSettings": {},
         "Addons": "",
         "PreLaunchCommand": "",
