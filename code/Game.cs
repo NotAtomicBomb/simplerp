@@ -18,7 +18,7 @@ namespace MyGame;
 /// You can use this to create things like HUDs and declare which player class
 /// to use for spawned players.
 /// </summary>
-public partial class MyGame : Sandbox.GameManager
+public partial class SimpleRp : Sandbox.GameManager
 {
 	[Net]
 	public IDictionary<string, Player> Players { get; set; }
@@ -29,7 +29,7 @@ public partial class MyGame : Sandbox.GameManager
 	/// <summary>
 	/// Called when the game is created (on both the server and client)
 	/// </summary>
-	public MyGame()
+	public SimpleRp()
 	{
 		if ( Game.IsClient )
 		{
@@ -37,13 +37,7 @@ public partial class MyGame : Sandbox.GameManager
 			Game.RootPanel = new PlayerList();
 			Game.RootPanel = new JobMenu();
 		}
-
-		if( Game.IsServer )
-		{
-			LoadJobs();
-		}
-		
-		
+		LoadJobs();
 	}
 
 	/// <summary>

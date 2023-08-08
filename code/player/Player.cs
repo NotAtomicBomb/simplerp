@@ -16,7 +16,7 @@ namespace MyGame
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
-		[Net, JsonIgnore]
+		[Net]
 		public Job Job { get; set; }
 
 		/// <summary>
@@ -28,7 +28,6 @@ namespace MyGame
 		/// <summary>
 		/// The money in string format.
 		/// </summary>
-		[JsonIgnore]
 		public string FormattedMoney
 		{
 			get => Money.ToString("C0");
@@ -68,7 +67,7 @@ namespace MyGame
 		/// <returns><see cref="Player"/></returns>
 		public static Player GetPlayer( long steamId )
 		{
-			IDictionary<string ,Player> players = (GameManager.Current as MyGame).Players;
+			IDictionary<string ,Player> players = (GameManager.Current as SimpleRp).Players;
 
 			Player player = players[steamId.ToString()];
 			return player;

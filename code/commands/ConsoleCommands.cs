@@ -14,7 +14,7 @@ namespace MyGame
 			// The client calling the command.
 			IClient callingClient = ConsoleSystem.Caller;
 			Player player = Player.GetPlayer(callingClient.SteamId );
-			Job newJob = (GameManager.Current as MyGame).Jobs[jobName];
+			Job newJob = (GameManager.Current as SimpleRp).Jobs[jobName];
 			if ( newJob != null && player != null )
 			{
 				player.SwitchJob( newJob );

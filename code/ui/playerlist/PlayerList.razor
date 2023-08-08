@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (Player player in (GameManager.Current as MyGame).Players.Values) {
+                @foreach (Player player in (GameManager.Current as SimpleRp).Players.Values) {
                     <tr>
                         <td>@player.Client.Name</td>
                         @if (player.Job != null)
