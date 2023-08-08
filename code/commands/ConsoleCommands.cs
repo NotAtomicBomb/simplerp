@@ -25,5 +25,21 @@ namespace MyGame
 			}
 			
 		}
+
+		[ConCmd.Admin( "switch_player_job" )]
+		public static void SwitchJob( string playerName, string jobName )
+		{
+			Player player = Player.GetPlayer( playerName );
+			Job newJob = (GameManager.Current as SimpleRp).Jobs[jobName];
+			if ( newJob != null && player != null )
+			{
+				player.SwitchJob( newJob );
+			}
+			else
+			{
+				Log.Warning( "Job not found." );
+			}
+
+		}
 	}
 }

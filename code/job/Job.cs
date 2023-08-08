@@ -41,6 +41,11 @@ namespace MyGame
 		[Net]
 		public int Wage { get; set; } = 0;
 
+		public bool IsFull
+		{
+			get => CurrentNumberOfPlayers == MaxPlayers;
+		}
+
 		/// <summary>
 		/// The wage in proper string format.
 		/// </summary>
