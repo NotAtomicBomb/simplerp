@@ -74,6 +74,19 @@ namespace MyGame
 		}
 
 		/// <summary>
+		/// Gets the <see cref="Player"/> via the SteamId.
+		/// </summary>
+		/// <param name="playerName">The Player name of the player you are trying to get. </param>
+		/// <returns><see cref="Player"/></returns>
+		public static Player GetPlayer( string playerName )
+		{
+			IDictionary<string, Player> players = (GameManager.Current as SimpleRp).Players;
+
+			Player player = players.FirstOrDefault(x => x.Value.Client.Name.ToLower() == playerName.ToLower()).Value;
+			return player;
+		}
+
+		/// <summary>
 		/// Sets the current info onto the Client.
 		/// </summary>
 		private void SetInfo()
@@ -86,25 +99,25 @@ namespace MyGame
 			}
 		}
 
+
+
 		/// <summary>
 		/// Switches the players job to the given job.
 		/// </summary>
 		/// <param name="job">The job you want to switch to.</param>
 		public void SwitchJob( Job job )
 		{
-			
-			bool isJobFull = (job.CurrentNumberOfPlayers + 1) > job.MaxPlayers;
 
 			if ( job.MaxPlayers != 0 )
 			{
 				if ( job != Job )
 				{
-					if ( !isJobFull )
+					if ( !job.IsFull )
 					{
 						Job.CurrentNumberOfPlayers -= 1;
 						Job = job;
-						job.CurrentNumberOfPlayers++;
-						Log.Info( $"{Client.Name} switched jobs to {job.Name}." );
+						Job.CurrentNumberOfPlayers++;
+						Log.Info( $"{Client.Name} switched jobs to {Job.Name}." );
 						SetInfo();
 					}
 					else
@@ -119,9 +132,8 @@ namespace MyGame
 			}
 			else
 			{
-				Log.Info( job.ToString() );
 				Job = job;
-				job.CurrentNumberOfPlayers++;
+				Job.CurrentNumberOfPlayers++;
 				SetInfo();
 			}
 		}
