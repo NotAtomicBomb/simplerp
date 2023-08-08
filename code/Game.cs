@@ -1,9 +1,6 @@
-﻿
-using Sandbox;
-using Sandbox.Internal;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 //
@@ -18,7 +15,7 @@ namespace MyGame;
 /// You can use this to create things like HUDs and declare which player class
 /// to use for spawned players.
 /// </summary>
-public partial class SimpleRp : Sandbox.GameManager
+public partial class SimpleRp : GameManager
 {
 	[Net]
 	public IDictionary<string, Player> Players { get; set; }
@@ -50,9 +47,10 @@ public partial class SimpleRp : Sandbox.GameManager
 		// Create a pawn for this client to play with
 		Player player = new();
 		client.Pawn = player;
-		player.Respawn();
 		player.DressFromClient( client );
 		player.SwitchJob( Job.None );
+		player.Respawn();
+
 		Players.Add(player.Client.SteamId.ToString() , player );
 		Log.Info( player );
 
@@ -75,8 +73,8 @@ public partial class SimpleRp : Sandbox.GameManager
 			player.Transform = tx;
 		}
 
-
 	}
+
 
 	public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 	{
