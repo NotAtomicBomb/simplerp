@@ -10,5 +10,11 @@
     "Description": "You are the man that stops crime.",
     "MaxPlayers": 5,
     "Wage": 75
+  },
+  "thief": {
+    "Name": "Thief",
+    "Description": "You steal shit.",
+    "MaxPlayers": 10,
+    "Wage": 25
   }
 }
