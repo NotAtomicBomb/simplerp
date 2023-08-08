@@ -1,11 +1,17 @@
-﻿using Sandbox;
+using Sandbox;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace MyGame
 {
-	public partial class Job : BaseNetworkable
+	public partial class Job : Entity
 	{
+
+		public Job() 
+		{
+			Transmit = TransmitType.Always;
+		}
+
 		/// <summary>
 		/// Default job.
 		/// </summary>
@@ -27,13 +33,13 @@ namespace MyGame
 		/// The max amount of players that can have the job.
 		/// </summary>
 		[Net]
-		public int MaxPlayers { get; set;  } = 0;
+		public int MaxPlayers { get; set; } = 0;
 
 		/// <summary>
 		/// The current number of players in the job.
 		/// </summary>
-		[Net, JsonIgnore]
-		public int CurrentNumberOfPlayers { get; set; } = 0 ;
+		[Net, Predicted]
+		public int CurrentNumberOfPlayers { get; set; } = 0;
 
 		/// <summary>
 		/// How much the job will give per pay period.
@@ -41,6 +47,9 @@ namespace MyGame
 		[Net]
 		public int Wage { get; set; } = 0;
 
+		/// <summary>
+		/// A bool that gets whether the current job is full
+		/// </summary>
 		public bool IsFull
 		{
 			get => CurrentNumberOfPlayers == MaxPlayers;
@@ -56,10 +65,9 @@ namespace MyGame
 		}
 
 		public override string ToString()
-		{
+		{  
 			return $"{Name};{Description};{FormattedWage};{MaxPlayers};{CurrentNumberOfPlayers}";
 		}
-
 
 	}
 }

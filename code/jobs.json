@@ -1,4 +1,10 @@
 ﻿{
+  "unemployed": {
+    "Name": "Unemployed",
+    "Description": "You have no job, maybe go get one.",
+    "MaxPlayers": 0,
+    "Wage": 0
+  },
   "pc": {
     "Name": "Police Chief",
     "Description": " You are the leader of the police. Save the citizens from crime.",

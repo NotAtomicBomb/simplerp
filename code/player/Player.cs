@@ -1,4 +1,4 @@
-﻿using Sandbox;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +114,10 @@ namespace MyGame
 				{
 					if ( !job.IsFull )
 					{
-						Job.CurrentNumberOfPlayers -= 1;
+						if ( Job != null )
+						{
+							Job.CurrentNumberOfPlayers -= 1;
+						}
 						Job = job;
 						Job.CurrentNumberOfPlayers++;
 						Log.Info( $"{Client.Name} switched jobs to {Job.Name}." );
@@ -132,6 +135,10 @@ namespace MyGame
 			}
 			else
 			{
+				if ( Job != null )
+				{
+					Job.CurrentNumberOfPlayers -= 1;
+				}
 				Job = job;
 				Job.CurrentNumberOfPlayers++;
 				SetInfo();

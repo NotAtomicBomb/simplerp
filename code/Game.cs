@@ -1,4 +1,4 @@
-﻿using Sandbox;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +48,7 @@ public partial class SimpleRp : GameManager
 		Player player = new();
 		client.Pawn = player;
 		player.DressFromClient( client );
-		player.SwitchJob( Job.None );
+		player.SwitchJob( Jobs["unemployed"] );
 		player.Respawn();
 
 		Players.Add(player.Client.SteamId.ToString() , player );

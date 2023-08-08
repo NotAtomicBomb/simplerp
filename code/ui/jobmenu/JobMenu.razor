@@ -12,13 +12,19 @@
         <div class="menu-container flex-column">
             <h1 class="center-text header-font">Available Jobs</h1>
             <div class="jobs-container flex-column">
-                @foreach (var entry in currentGame.Jobs)
+                @foreach (var entry in jobs)
                 {
                     if (entry.Value.Name != (Game.LocalPawn as Player).Job.Name)
                     {
                         <div class="job-card flex-column" onclick="@(() => ConsoleSystem.Run("switch_job", entry.Key))">
                             <h3 class="job-text center-text">@entry.Value.Name</h3>
-                            <h4 class="center-text">@entry.Value.CurrentNumberOfPlayers/@entry.Value.MaxPlayers</h4>
+                            @if (entry.Value.MaxPlayers != 0)
+                            {
+                                <h4 class="center-text">@entry.Value.CurrentNumberOfPlayers/@entry.Value.MaxPlayers</h4>
+                            }
+                            else{
+                                <h4 class="center-text">@entry.Value.CurrentNumberOfPlayers</h4>
+                            }
                         </div>
                     }
                 }
@@ -31,7 +37,7 @@
 @code
 {
     static JobMenu Instance;
-    SimpleRp currentGame = (GameManager.Current as SimpleRp);
+    IDictionary<string, Job> jobs;
     bool Hidden { get; set; } = true;
 
 
@@ -53,6 +59,11 @@
         if(Instance == null)
         {
             Instance = this;
+        }
+
+        if(jobs == null)
+        {
+            jobs = (GameManager.Current as SimpleRp).Jobs;
         }
 
     }
