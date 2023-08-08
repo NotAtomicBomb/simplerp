@@ -25,6 +25,10 @@ table{
     backdrop-filter: blur(10px);
     color: white;
 }
+    tbody {
+        display: flex;
+        flex-direction: column;
+    }
     td {
         background-color: green;
         width: 100%;
@@ -32,7 +36,6 @@ table{
     }
         th {
             border-bottom: 2px solid black;
-            border-collapse: collapse;
             text-align: right;
             width: 100%;
         }

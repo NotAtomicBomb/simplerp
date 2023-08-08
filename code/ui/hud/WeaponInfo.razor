@@ -34,7 +34,9 @@
             weapon = localPlayer.ActiveWeapon;
             WeaponInfo.UpdateInfo();
         }
-        StateHasChanged();
+        if(weapon!=null){
+          StateHasChanged();
+        }
 
     }
 

@@ -87,7 +87,6 @@ public partial class MyGame : Sandbox.GameManager
 	public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 	{
 		Player player = cl.Pawn as Player;
-		FileSystem.Data.WriteJson<Player>( "playerData", player );
 		Players.Remove( player.Client.SteamId.ToString() );
 
 		base.ClientDisconnect( cl, reason );
