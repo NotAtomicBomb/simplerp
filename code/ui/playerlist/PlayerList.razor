@@ -8,21 +8,28 @@
 @if (hidden == false)
 {
     <root>
-        <div class="playerlist-container center">
-            <h1 class="center">Players</h1>
-            <div class="line">
+        <table id="playerlist-table" class="center">
+        <h1 id="playerlist-title" class="center">Players</h1>
+            <thead>
+                <tr>
+                    <th>Players</th>
+                    <th>Job</th>
+                    <th id="ping">Ping</th>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (Player player in (GameManager.Current as MyGame).Players.Values) {
-                    <div class="player-container">
-                        <h3>@player.Client.Name</h3>
-                        <h3>@player.Client.Ping</h3>
+                    <tr>
+                        <td>@player.Client.Name</td>
                         @if (player.Job != null)
-                        {
-                            <h3>@player.Job.Name</h3>
+                        {   
+                            <td>@player.Job.Name</td>
                         }
-                    </div>
+                        <td>@player.Client.Ping</td>
+                    </tr>
                 }
-            </div>
-        </div>
+            </tbody>
+        </table>
     </root>
 }
 

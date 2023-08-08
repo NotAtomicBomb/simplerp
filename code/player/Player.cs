@@ -105,7 +105,7 @@ namespace MyGame
 						Job.CurrentNumberOfPlayers -= 1;
 						Job = job;
 						job.CurrentNumberOfPlayers++;
-						Log.Info( $"{Client.Name} switch jobs to {job.Name}." );
+						Log.Info( $"{Client.Name} switched jobs to {job.Name}." );
 						SetInfo();
 					}
 					else

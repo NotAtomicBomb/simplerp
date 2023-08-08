@@ -8,7 +8,7 @@
   "HasAssets": true,
   "AssetsPath": "",
   "Resources": "*.json\n/ui/*",
-  "MenuResources": "ui/mainmenu/*",
+  "MenuResources": "ui/mainmenu/*\nui/mainmenu/LoadingScreen.razor.scss",
   "HasCode": true,
   "CodePath": "/code/",
   "PackageReferences": [],
