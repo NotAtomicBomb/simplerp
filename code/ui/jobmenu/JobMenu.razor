@@ -1,4 +1,4 @@
-@using Sandbox;
+        @using Sandbox;
 @using Sandbox.UI;
 @using System.Collections.Generic;
 
@@ -8,10 +8,9 @@
  @if (Hidden == false)
 {
     <root>
-
-        <div class="menu-container flex-column">
-            <h1 class="center-text header-font">Available Jobs</h1>
-            <div class="jobs-container flex-column">
+        <div class="menu-container flex-column center">
+            <h1 class="header-font">Available Jobs</h1>
+            <div class="jobs-container">
                 @foreach (var entry in jobs)
                 {
                     if (entry.Value.Name != (Game.LocalPawn as Player).Job.Name)
