@@ -30,6 +30,12 @@ namespace MyGame
 		public string Description { get; set; } = "";
 
 		/// <summary>
+		/// Description of the job.
+		/// </summary>
+		[Net]
+		public string Category { get; set; } = "Civilian";
+
+		/// <summary>
 		/// The max amount of players that can have the job.
 		/// </summary>
 		[Net]

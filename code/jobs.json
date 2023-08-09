@@ -2,24 +2,28 @@
   "unemployed": {
     "Name": "Unemployed",
     "Description": "You have no job, maybe go get one.",
+    "Category": "Civilian",
     "MaxPlayers": 0,
     "Wage": 0
   },
   "pc": {
     "Name": "Police Chief",
     "Description": " You are the leader of the police. Save the citizens from crime.",
+    "Category": "Government",
     "MaxPlayers": 1,
     "Wage": 100
   },
   "po": {
     "Name": "Police Officer",
     "Description": "You are the man that stops crime.",
+    "Category": "Government",
     "MaxPlayers": 5,
     "Wage": 75
   },
   "thief": {
     "Name": "Thief",
     "Description": "You steal shit.",
+    "Category": "Criminal",
     "MaxPlayers": 10,
     "Wage": 25
   }
