@@ -1,21 +1,16 @@
 PlayerList {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 * {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#playerlist-title {
-    font-size: 40px;
-    text-decoration: underline;
-    padding-bottom: 15px;
-}
 
 
-table{
+
+table {
     padding: 20px;
-    display: flex;
     flex-direction: column;
     pointer-events: all;
     margin-top: 3%;
@@ -24,21 +19,65 @@ table{
     background-color: rgba(black, 0.5);
     backdrop-filter: blur(10px);
     color: white;
-}
+
+
+    #playerlist-title {
+        font-size: 40px;
+        text-decoration: underline;
+        padding-bottom: 15px;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
     tbody {
-        display: flex;
         flex-direction: column;
+        overflow: scroll;
+        z-index: -2;
+
+        tr {
+            flex-grow: 0;
+            flex-shrink: 0;
+            margin-bottom: 1px;
+
+            :nth-child(2) {
+                justify-content: center;
+            }
+
+            :nth-child(3) {
+                justify-content: center;
+            }
+
+            td {
+                background-color: green;
+                width: 100%;
+                padding: 5px;
+            }
+        }
     }
-    td {
-        background-color: green;
-        width: 100%;
-        padding: 5px;
-    }
+
+    thead {
+        flex-grow: 0;
+        flex-shrink: 0;
+
         th {
             border-bottom: 2px solid black;
             text-align: right;
             width: 100%;
         }
+
+        tr {
+            :nth-child(2) {
+                justify-content: center;
+            }
+
+            :nth-child(3) {
+                justify-content: center;
+            }
+        }
+    }
+}
+
+    
     
 
 

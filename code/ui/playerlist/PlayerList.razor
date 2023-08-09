@@ -1,5 +1,6 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using System.Linq;
 
 @namespace MyGame
 @inherits RootPanel
@@ -14,11 +15,11 @@
                 <tr>
                     <th>Players</th>
                     <th>Job</th>
-                    <th id="ping">Ping</th>
+                    <th>Ping</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (Player player in (GameManager.Current as SimpleRp).Players.Values) {
+                @foreach (Player player in (GameManager.Current as SimpleRp).Players.Values.OrderBy(x => x.Job.Name)) {
                     <tr>
                         <td>@player.Client.Name</td>
                         @if (player.Job != null)
