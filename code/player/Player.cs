@@ -135,13 +135,20 @@ namespace MyGame
 			}
 			else
 			{
-				if ( Job != null )
+				if ( job != Job )
 				{
-					Job.CurrentNumberOfPlayers -= 1;
+					if ( Job != null )
+					{
+						Job.CurrentNumberOfPlayers -= 1;
+					}
+					Job = job;
+					Job.CurrentNumberOfPlayers++;
+					SetInfo();
 				}
-				Job = job;
-				Job.CurrentNumberOfPlayers++;
-				SetInfo();
+				else
+				{
+					Log.Warning( "You are already that job." );
+				}
 			}
 		}
 
