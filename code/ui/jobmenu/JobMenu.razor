@@ -1,6 +1,6 @@
-        @using Sandbox;
+@using Sandbox;
 @using Sandbox.UI;
-@using System.Collections.Generic;
+@using System.Linq;
 
 @namespace MyGame
 @inherits RootPanel
@@ -11,21 +11,25 @@
         <div class="menu-container flex-column center">
             <h1 class="header-font">Available Jobs</h1>
             <div class="jobs-container">
-                @foreach (var entry in jobs)
+                @foreach (var entry in (GameManager.Current as SimpleRp).Jobs.GroupBy(x => x.Value.Category))
                 {
-                    if (entry.Value.Name != (Game.LocalPawn as Player).Job.Name)
+                    <h1 class="center-text">@entry.Key</h1>
+                    <div class="category">
+                    @foreach (var collection in entry)
                     {
-                        <div class="job-card flex-column" onclick="@(() => ConsoleSystem.Run("switch_job", entry.Key))">
-                            <h3 class="job-text center-text">@entry.Value.Name</h3>
-                            @if (entry.Value.MaxPlayers != 0)
+                        <div class="job-card flex-column" onclick="@(() => ConsoleSystem.Run("switch_job", collection.Key))">
+                            <h3 class="job-text center-text">@collection.Value.Name</h3>
+                            @if (collection.Value.MaxPlayers != 0)
                             {
-                                <h4 class="center-text">@entry.Value.CurrentNumberOfPlayers/@entry.Value.MaxPlayers</h4>
+                                <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers/@collection.Value.MaxPlayers</h4>
                             }
-                            else{
-                                <h4 class="center-text">@entry.Value.CurrentNumberOfPlayers</h4>
+                            else
+                            {
+                                <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers</h4>
                             }
-                        </div>
+                        </div>   
                     }
+                   </div>
                 }
             </div>
         </div>
@@ -36,7 +40,6 @@
 @code
 {
     static JobMenu Instance;
-    IDictionary<string, Job> jobs;
     bool Hidden { get; set; } = true;
 
 
@@ -58,11 +61,6 @@
         if(Instance == null)
         {
             Instance = this;
-        }
-
-        if(jobs == null)
-        {
-            jobs = (GameManager.Current as SimpleRp).Jobs;
         }
 
     }

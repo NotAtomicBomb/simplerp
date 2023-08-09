@@ -26,5 +26,12 @@
     "Category": "Criminal",
     "MaxPlayers": 10,
     "Wage": 25
+  },
+  "vipthief": {
+    "Name": "Super Thief",
+    "Description": "You steal shit.",
+    "Category": "Vip",
+    "MaxPlayers": 5,
+    "Wage": 25
   }
 }
