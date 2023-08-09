@@ -1,56 +1,60 @@
 Hud {
-    .info {
+    PlayerInfo {
         position: absolute;
-        left: 0px;
-        bottom: 0px;
-        flex-direction: column;
-        padding: 20px;
-        background-color: rgba(black, 0.5);
-        backdrop-filter: blur(10px);
+        left: 0;
+        bottom: 0;
 
-        * {
-            margin: 1px;
-        }
+        .info {
+            flex-direction: column;
+            padding: 20px;
+            background-color: rgba(black, 0.5);
+            backdrop-filter: blur(10px);
+            border-top-right-radius: 4%;
 
-        label {
-            font-family: 'Segoe UI';
-            color: black;
-            font-size: 24px;
-
-            &#salary {
-                color: black;
-                filter: border-wrap(2px darkgreen);
-            }
-
-            &#job {
-                filter: border-wrap(2px darkblue);
-            }
-
-            &#money {
-                filter: border-wrap(2px darkblue);
-            }
-        }
-
-        #health-bar {
-            color: white;
-            background-color: black;
-            width: 300px;
-            margin-top: 10px;
-            height: 40px;
-
-            #hp-bar {
-                width: 100%;
-                background-color: darkred;
-                transition: width 250ms;
+            * {
+                margin: 1px;
             }
 
             label {
-                padding: 1px 0px;
-                text-align: center;
+                font-family: 'Segoe UI';
+                color: black;
+                font-size: 24px;
+
+                &#salary {
+                    color: black;
+                    filter: border-wrap(2px darkgreen);
+                }
+
+                &#job {
+                    filter: border-wrap(2px darkblue);
+                }
+
+                &#money {
+                    filter: border-wrap(2px darkblue);
+                }
+            }
+
+            #health-bar {
                 color: white;
-                height: auto;
-                position: absolute;
-                left: 140px;
+                background-color: black;
+                width: 300px;
+                margin-top: 10px;
+                height: 40px;
+
+                #hp-bar {
+                    width: 100%;
+                    background-color: darkred;
+                    transition: width 250ms;
+                }
+
+                label {
+                    padding: 1px 0px;
+                    text-align: center;
+                    color: white;
+                    height: auto;
+                    position: absolute;
+                    left: 140px;
+                }
             }
         }
     }
