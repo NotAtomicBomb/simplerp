@@ -3,11 +3,12 @@ Hud {
     .info {
         position: absolute;
         bottom: 0px;
-        left: 93vw;
+        left: 90vw;
         flex-direction: column;
         padding: 20px;
         background-color: rgba(black, 0.5);
         backdrop-filter: blur(10px);
+        border-top-left-radius: 10%;
 
         * {
             margin: 1px;
@@ -15,8 +16,8 @@ Hud {
 
         label {
             font-family: 'Segoe UI';
-            color: black;
-            font-size: 24px;
+            color: white;
+            font-size: 40px;
 
             &#salary {
                 color: black;
