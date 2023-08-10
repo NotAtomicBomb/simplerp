@@ -11,6 +11,9 @@ namespace MyGame
 { 
 	public partial class Player : Pawn
 	{
+		/// <summary>
+		/// How often to payout job wages
+		/// </summary>
 		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
 		public bool FirstTimeJoining { get; internal set; } = true;
 
@@ -26,8 +29,16 @@ namespace MyGame
 		[Net] 
 		public long Money { get; protected set; } = 0;
 
+		/// <summary>
+		/// The time since last pay period
+		/// </summary>
 		[Net, Predicted]
 		public TimeSince TimeSinceLastPay { get; protected set; }
+		/// <summary>
+		/// The time since last job switch
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSinceLastJobSwitch { get; protected set; } = 60f;
 
 		public override void Simulate( IClient cl )
 		{
@@ -135,35 +146,21 @@ namespace MyGame
 		/// <param name="job">The job you want to switch to.</param>
 		public void SwitchJob( Job job )
 		{
+			if ( job == Job ) 
+			{
+				Log.Warning( "You are already that job." );
+				return;
+			}
+
+			if (TimeSinceLastJobSwitch < 60f )
+			{
+				Log.Info( $"You must wait {(60f - TimeSinceLastJobSwitch):0}s before switching jobs." );
+				return;
+			}
 
 			if ( job.MaxPlayers != 0 )
 			{
-				if ( job != Job )
-				{
-					if ( !job.IsFull )
-					{
-						if ( Job != null )
-						{
-							Job.CurrentNumberOfPlayers -= 1;
-						}
-						Job = job;
-						Job.CurrentNumberOfPlayers++;
-						Log.Info( $"{Client.Name} switched jobs to {Job.Name}." );
-						SetInfo();
-					}
-					else
-					{
-						Log.Warning( "Job is full." );
-					}
-				}
-				else
-				{
-					Log.Warning( "You are already that job." );
-				}
-			}
-			else
-			{
-				if ( job != Job )
+				if ( !job.IsFull )
 				{
 					if ( Job != null )
 					{
@@ -171,12 +168,25 @@ namespace MyGame
 					}
 					Job = job;
 					Job.CurrentNumberOfPlayers++;
+					TimeSinceLastJobSwitch = 0;
+					Log.Info( $"{Client.Name} switched jobs to {Job.Name}." );
 					SetInfo();
 				}
 				else
 				{
-					Log.Warning( "You are already that job." );
+					Log.Warning( "Job is full." );
 				}
+			}
+			else
+			{
+				if ( Job != null )
+				{
+					Job.CurrentNumberOfPlayers -= 1;
+				}
+				Job = job;
+				Job.CurrentNumberOfPlayers++;
+				TimeSinceLastJobSwitch = 0;
+				SetInfo();
 			}
 		}
 
