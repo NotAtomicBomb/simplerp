@@ -11,6 +11,7 @@ namespace MyGame
 { 
 	public partial class Player : Pawn
 	{
+		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
 		public bool FirstTimeJoining { get; internal set; } = true;
 
 		/// <summary>
@@ -24,6 +25,18 @@ namespace MyGame
 		/// </summary>
 		[Net] 
 		public long Money { get; protected set; } = 0;
+
+		[Net, Predicted]
+		public TimeSince TimeSinceLastPay { get; protected set; }
+
+		public override void Simulate( IClient cl )
+		{
+			base.Simulate( cl );
+
+			PayPlayer();
+
+
+		}
 
 		/// <summary>
 		/// The money in string format.
@@ -58,6 +71,19 @@ namespace MyGame
 			Money -= money;
 			SetInfo();
 			return true;
+		}
+
+		/// <summary>
+		/// Pays the player their job wage.
+		/// </summary>
+		private void PayPlayer()
+		{
+			if ( TimeSinceLastPay >= PayPeriod )
+			{
+				TimeSinceLastPay = 0;
+				AddMoney( Job.Wage );
+				Log.Info( "You've been paid" );
+			}
 		}
 
 		/// <summary>
@@ -98,6 +124,8 @@ namespace MyGame
 				JobMenu.UpdateInfo(); // Ignore the error, it works.
 			}
 		}
+
+
 
 
 
