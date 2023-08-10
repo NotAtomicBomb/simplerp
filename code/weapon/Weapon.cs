@@ -33,8 +33,19 @@ public partial class Weapon : AnimatedEntity
 	/// </summary>
 	public virtual int MagSize => 12;
 
+	/// <summary>
+	/// The time it takes to reload
+	/// </summary>
+	public virtual float ReloadTime => 2.5f;
+
+	/// <summary>
+	/// The current ammo of the weapon
+	/// </summary>
 	[Net]
 	public int CurrentAmmo { get; set; } = 12;
+	/// <summary>
+	/// The current reserveammo of the weapon
+	/// </summary>
 	[Net]
 	public int ReserveAmmo { get; set; } = 32;
 
@@ -42,6 +53,15 @@ public partial class Weapon : AnimatedEntity
 	/// How long since we last shot this gun.
 	/// </summary>
 	[Net, Predicted] public TimeSince TimeSincePrimaryAttack { get; set; }
+	/// <summary>
+	/// How long since reloading
+	/// </summary>
+	[Net, Predicted] public TimeSince TimeSinceReload { get; set; }
+	/// <summary>
+	/// If the weapon is currently reloading
+	/// </summary>
+	[Net, Predicted] public bool IsReloading { get; set; }
+
 
 	public override void Spawn()
 	{
@@ -67,6 +87,40 @@ public partial class Weapon : AnimatedEntity
 		CreateViewModel( To.Single( pawn ) );
 	}
 
+	public virtual void Reload()
+	{
+		if ( ReserveAmmo == 0 ) return;
+		if(IsReloading) return;
+
+		TimeSinceReload = 0;
+		IsReloading = true;
+
+		(Owner as AnimatedEntity)?.SetAnimParameter( "b_reload", true );
+
+	}
+
+	public virtual void OnReloadFinish()
+	{
+		var AmmoNeeded = (MagSize - CurrentAmmo);
+		if ( (ReserveAmmo - AmmoNeeded) < 0 && ReserveAmmo > 0 )
+		{
+			CurrentAmmo = ReserveAmmo;
+			ReserveAmmo = 0;
+		}
+		else
+		{
+			ReserveAmmo -= AmmoNeeded;
+			CurrentAmmo += AmmoNeeded;
+		}
+		IsReloading = false;
+	}
+
+	[ClientRpc]
+	public virtual void StartReloadEffects()
+	{
+		ViewModelEntity?.SetAnimParameter( "b_reload", true );
+	}
+
 	/// <summary>
 	/// Called when the weapon is either removed from the player, or holstered.
 	/// </summary>
@@ -84,7 +138,7 @@ public partial class Weapon : AnimatedEntity
 	{
 		Animate();
 
-		if ( CanPrimaryAttack() )
+		if ( CanPrimaryAttack() && !IsReloading )
 		{
 			using ( LagCompensation() )
 			{
@@ -92,6 +146,17 @@ public partial class Weapon : AnimatedEntity
 				PrimaryAttack();
 			}
 		}
+
+		if ( Input.Pressed( "reload" ) )
+		{
+			Reload();
+		}
+
+		if( IsReloading && TimeSinceReload > ReloadTime ) 
+		{ 
+			OnReloadFinish();
+		}
+
 	}
 
 	/// <summary>
