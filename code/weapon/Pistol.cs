@@ -7,6 +7,7 @@ public partial class Pistol : Weapon
 	public override string ModelPath => "weapons/rust_pistol/rust_pistol.vmdl";
 	public override string ViewModelPath => "weapons/rust_pistol/v_rust_pistol.vmdl";
 	public override int MagSize => 7;
+	public override float ReloadTime => 2.5f;
 
 	public override void Spawn()
 	{
@@ -22,7 +23,7 @@ public partial class Pistol : Weapon
 
 		Particles.Create( "particles/pistol_muzzleflash.vpcf", EffectEntity, "muzzle" );
 
-		Pawn.SetAnimParameter( "b_attack", true );
+		
 		ViewModelEntity?.SetAnimParameter( "fire", true );
 	}
 
@@ -30,6 +31,7 @@ public partial class Pistol : Weapon
 	{
 		if ( CurrentAmmo > 0 )
 		{
+			Pawn.SetAnimParameter( "b_attack", true );
 			ShootEffects();
 			Pawn.PlaySound( "rust_pistol.shoot" );
 			ShootBullet( 0.1f, 100, 20, 1 );

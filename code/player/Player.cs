@@ -43,10 +43,7 @@ namespace MyGame
 		public override void Simulate( IClient cl )
 		{
 			base.Simulate( cl );
-
 			PayPlayer();
-
-
 		}
 
 		/// <summary>

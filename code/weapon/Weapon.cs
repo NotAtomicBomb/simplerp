@@ -96,6 +96,7 @@ public partial class Weapon : AnimatedEntity
 		IsReloading = true;
 
 		(Owner as AnimatedEntity)?.SetAnimParameter( "b_reload", true );
+		StartReloadEffects();
 
 	}
 
@@ -118,7 +119,7 @@ public partial class Weapon : AnimatedEntity
 	[ClientRpc]
 	public virtual void StartReloadEffects()
 	{
-		ViewModelEntity?.SetAnimParameter( "b_reload", true );
+		ViewModelEntity?.SetAnimParameter( "reload", true );
 	}
 
 	/// <summary>
