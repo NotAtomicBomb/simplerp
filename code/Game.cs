@@ -31,9 +31,6 @@ public partial class SimpleRp : GameManager
 		if ( Game.IsClient )
 		{
 			Game.RootPanel = new Hud();
-			Game.RootPanel = new PlayerList();
-			Game.RootPanel = new JobMenu();
-			Game.RootPanel = new Crosshair();
 		}
 		LoadJobs();
 	}

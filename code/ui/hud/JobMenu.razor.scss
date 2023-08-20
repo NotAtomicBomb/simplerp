@@ -1,4 +1,7 @@
 JobMenu {
+    height: 100%;
+    width: 100%;
+    position: absolute;
 
     * {
         font-family: "Segoe UI";
@@ -37,7 +40,7 @@ JobMenu {
                 flex-grow: 0;
                 flex-shrink: 0;
                 flex-wrap: wrap;
-                
+
 
                 .job-card {
                     pointer-events: auto;
