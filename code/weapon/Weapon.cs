@@ -2,102 +2,86 @@ using Sandbox;
 using System.Collections.Generic;
 
 namespace MyGame;
-
-public partial class Weapon : AnimatedEntity
+public partial class Weapon : BaseWeapon, IUse
 {
-	/// <summary>
-	/// The View Model's entity, only accessible clientside.
-	/// </summary>
-	public WeaponViewModel ViewModelEntity { get; protected set; }
+	public virtual float ReloadTime => 3.0f;
 
-	/// <summary>
-	/// An accessor to grab our Pawn.
-	/// </summary>
-	public Pawn Pawn => Owner as Pawn;
+	public PickupTrigger PickupTrigger { get; protected set; }
 
-	/// <summary>
-	/// This'll decide which entity to fire effects from. If we're in first person, the View Model, otherwise, this.
-	/// </summary>
-	public AnimatedEntity EffectEntity => Camera.FirstPersonViewer == Owner ? ViewModelEntity : this;
+	[Net, Predicted]
+	public TimeSince TimeSinceReload { get; set; }
 
-	public virtual string ViewModelPath => null;
-	public virtual string ModelPath => null;
+	[Net, Predicted]
+	public bool IsReloading { get; set; }
 
-	/// <summary>
-	/// How often you can shoot this gun.
-	/// </summary>
-	public virtual float PrimaryRate => 5.0f;
+	[Net, Predicted]
+	public TimeSince TimeSinceDeployed { get; set; }
 
-	/// <summary>
-	/// The max amount of ammout you can have in the gun at any given time.
-	/// </summary>
 	public virtual int MagSize => 12;
 
-	/// <summary>
-	/// The time it takes to reload
-	/// </summary>
-	public virtual float ReloadTime => 2.5f;
+	[Net]
+	public int ReserveAmmo { get; set; } = 42;
 
-	/// <summary>
-	/// The current ammo of the weapon
-	/// </summary>
 	[Net]
 	public int CurrentAmmo { get; set; } = 12;
-	/// <summary>
-	/// The current reserveammo of the weapon
-	/// </summary>
-	[Net]
-	public int ReserveAmmo { get; set; } = 32;
-
-	/// <summary>
-	/// How long since we last shot this gun.
-	/// </summary>
-	[Net, Predicted] public TimeSince TimeSincePrimaryAttack { get; set; }
-	/// <summary>
-	/// How long since reloading
-	/// </summary>
-	[Net, Predicted] public TimeSince TimeSinceReload { get; set; }
-	/// <summary>
-	/// If the weapon is currently reloading
-	/// </summary>
-	[Net, Predicted] public bool IsReloading { get; set; }
-
 
 	public override void Spawn()
 	{
-		EnableHideInFirstPerson = true;
-		EnableShadowInFirstPerson = true;
-		EnableDrawing = false;
+		base.Spawn();
 
-		if ( ModelPath != null )
+		Tags.Add( "weapon" );
+
+		PickupTrigger = new PickupTrigger
 		{
-			SetModel( ModelPath );
+			Parent = this,
+			Position = Position,
+			EnableTouch = true,
+			EnableSelfCollisions = false
+		};
+
+		PickupTrigger.PhysicsBody.AutoSleep = false;
+	}
+
+	public override void ActiveStart( Entity ent )
+	{
+		base.ActiveStart( ent );
+
+		TimeSinceDeployed = 0;
+
+		if ( PhysicsGroup.IsValid() )
+		{
+			PhysicsGroup.Velocity = 0;
+			PhysicsGroup.AngularVelocity = 0;
 		}
 	}
 
-	/// <summary>
-	/// Called when <see cref="Pawn.SetActiveWeapon(Weapon)"/> is called for this weapon.
-	/// </summary>
-	/// <param name="pawn"></param>
-	public void OnEquip( Pawn pawn )
+	public override void Reload()
 	{
-		Owner = pawn;
-		SetParent( pawn, true );
-		EnableDrawing = true;
-		CreateViewModel( To.Single( pawn ) );
-	}
-
-	public virtual void Reload()
-	{
-		if ( ReserveAmmo == 0 ) return;
-		if(IsReloading) return;
+		if ( IsReloading )
+			return;
 
 		TimeSinceReload = 0;
 		IsReloading = true;
 
 		(Owner as AnimatedEntity)?.SetAnimParameter( "b_reload", true );
-		StartReloadEffects();
 
+		StartReloadEffects();
+	}
+
+	public override void Simulate( IClient owner )
+	{
+		if ( TimeSinceDeployed < 0.6f )
+			return;
+
+		if ( !IsReloading )
+		{
+			base.Simulate( owner );
+		}
+
+		if ( IsReloading && TimeSinceReload > ReloadTime )
+		{
+			OnReloadFinish();
+		}
 	}
 
 	public virtual void OnReloadFinish()
@@ -119,87 +103,76 @@ public partial class Weapon : AnimatedEntity
 	[ClientRpc]
 	public virtual void StartReloadEffects()
 	{
-		ViewModelEntity?.SetAnimParameter( "reload", true );
+		ViewModelEntity?.SetAnimParameter( "b_reload", true );
+
+		// TODO - player third person model reload
 	}
 
-	/// <summary>
-	/// Called when the weapon is either removed from the player, or holstered.
-	/// </summary>
-	public void OnHolster()
+	public override void CreateViewModel()
 	{
-		EnableDrawing = false;
-		DestroyViewModel( To.Single( Owner ) );
-	}
+		Game.AssertClient();
 
-	/// <summary>
-	/// Called from <see cref="Pawn.Simulate(IClient)"/>.
-	/// </summary>
-	/// <param name="player"></param>
-	public override void Simulate( IClient player )
-	{
-		Animate();
+		if ( string.IsNullOrEmpty( ViewModelPath ) )
+			return;
 
-		if ( CanPrimaryAttack() && !IsReloading )
+		ViewModelEntity = new ViewModel
 		{
-			using ( LagCompensation() )
-			{
-				TimeSincePrimaryAttack = 0;
-				PrimaryAttack();
-			}
-		}
+			Position = Position,
+			Owner = Owner,
+			EnableViewmodelRendering = true
+		};
 
-		if ( Input.Pressed( "reload" ) )
+		ViewModelEntity.SetModel( ViewModelPath );
+	}
+
+	public bool OnUse( Entity user )
+	{
+		if ( Owner != null )
+			return false;
+
+		if ( !user.IsValid() )
+			return false;
+
+		user.StartTouch( this );
+
+		return false;
+	}
+
+	public virtual bool IsUsable( Entity user )
+	{
+		var player = user as Player;
+		if ( Owner != null ) return false;
+
+		if ( player.Inventory is Inventory inventory )
 		{
-			Reload();
+			return inventory.CanAdd( this );
 		}
 
-		if( IsReloading && TimeSinceReload > ReloadTime ) 
-		{ 
-			OnReloadFinish();
-		}
-
+		return true;
 	}
 
-	/// <summary>
-	/// Called every <see cref="Simulate(IClient)"/> to see if we can shoot our gun.
-	/// </summary>
-	/// <returns></returns>
-	public virtual bool CanPrimaryAttack()
+	public void Remove()
 	{
-		if ( !Owner.IsValid() || !Input.Down( "attack1" ) ) return false;
-
-		var rate = PrimaryRate;
-		if ( rate <= 0 ) return true;
-
-		return TimeSincePrimaryAttack > (1 / rate);
+		Delete();
 	}
 
-	/// <summary>
-	/// Called when your gun shoots.
-	/// </summary>
-	public virtual void PrimaryAttack()
+	[ClientRpc]
+	protected virtual void ShootEffects()
 	{
+		Game.AssertClient();
 
+		Particles.Create( "particles/pistol_muzzleflash.vpcf", EffectEntity, "muzzle" );
+
+		ViewModelEntity?.SetAnimParameter( "fire", true );
 	}
 
-	/// <summary>
-	/// Useful for setting anim parameters based off the current weapon.
-	/// </summary>
-	protected virtual void Animate()
-	{
-	}
-
-	/// <summary>
-	/// Does a trace from start to end, does bullet impact effects. Coded as an IEnumerable so you can return multiple
-	/// hits, like if you're going through layers or ricocheting or something.
-	/// </summary>
-	public virtual IEnumerable<TraceResult> TraceBullet( Vector3 start, Vector3 end, float radius = 2.0f )
+	public override IEnumerable<TraceResult> TraceBullet( Vector3 start, Vector3 end, float radius = 2.0f )
 	{
 		bool underWater = Trace.TestPoint( start, "water" );
 
 		var trace = Trace.Ray( start, end )
 				.UseHitboxes()
-				.WithAnyTags( "solid", "player", "npc" )
+				.WithAnyTags( "solid", "player", "npc", "glass" )
 				.Ignore( this )
 				.Size( radius );
 
@@ -213,6 +186,36 @@ public partial class Weapon : AnimatedEntity
 
 		if ( tr.Hit )
 			yield return tr;
+
+		//
+		// Another trace, bullet going through thin material, penetrating water surface?
+		//
+	}
+
+	public IEnumerable<TraceResult> TraceMelee( Vector3 start, Vector3 end, float radius = 2.0f )
+	{
+		var trace = Trace.Ray( start, end )
+				.UseHitboxes()
+				.WithAnyTags( "solid", "player", "npc", "glass" )
+				.Ignore( this );
+
+		var tr = trace.Run();
+
+		if ( tr.Hit )
+		{
+			yield return tr;
+		}
+		else
+		{
+			trace = trace.Size( radius );
+
+			tr = trace.Run();
+
+			if ( tr.Hit )
+			{
+				yield return tr;
+			}
+		}
 	}
 
 	/// <summary>
@@ -261,22 +264,16 @@ public partial class Weapon : AnimatedEntity
 		ShootBullet( ray.Position, ray.Forward, spread, force, damage, bulletSize );
 	}
 
-	[ClientRpc]
-	public void CreateViewModel()
+	/// <summary>
+	/// Shoot a multiple bullets from owners view point
+	/// </summary>
+	public virtual void ShootBullets( int numBullets, float spread, float force, float damage, float bulletSize )
 	{
-		if ( ViewModelPath == null ) return;
+		var ray = Owner.AimRay;
 
-		var vm = new WeaponViewModel( this );
-		vm.Model = Model.Load( ViewModelPath );
-		ViewModelEntity = vm;
-	}
-
-	[ClientRpc]
-	public void DestroyViewModel()
-	{
-		if ( ViewModelEntity.IsValid() )
+		for ( int i = 0; i < numBullets; i++ )
 		{
-			ViewModelEntity.Delete();
+			ShootBullet( ray.Position, ray.Forward, spread, force / numBullets, damage, bulletSize );
 		}
 	}
 }

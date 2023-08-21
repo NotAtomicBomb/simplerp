@@ -41,5 +41,31 @@ namespace MyGame
 			}
 
 		}
+
+		[ConCmd.Admin( "noclip" )]
+		static void DoPlayerNoclip()
+		{
+			if ( ConsoleSystem.Caller.Pawn is Player player )
+			{
+				if ( player.DevController is NoclipController )
+				{
+					player.DevController = null;
+				}
+				else
+				{
+					player.DevController = new NoclipController();
+				}
+			}
+		}
+
+		[ConCmd.Admin( "kill" )]
+		static void DoPlayerSuicide()
+		{
+			if ( ConsoleSystem.Caller.Pawn is Player player )
+			{
+				player.TakeDamage( new DamageInfo { Damage = player.Health * 99 } );
+			}
+		}
+
 	}
 }

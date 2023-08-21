@@ -12,14 +12,14 @@ public class BaseInventory : IBaseInventory
 	{
 		get
 		{
-			return (Owner as Player)?.ActiveWeapon as Entity;
+			return (Owner as Player)?.ActiveChild;
 		}
 
 		set
 		{
 			if ( Owner is Player player )
 			{
-				player.ActiveWeapon  = value as Weapon;
+				player.ActiveChild  = value;
 			}
 		}
 	}
@@ -222,6 +222,7 @@ public class BaseInventory : IBaseInventory
 		if ( Active == ent ) return false;
 		if ( !Contains( ent ) ) return false;
 
+
 		Active = ent;
 		return true;
 	}
@@ -246,8 +247,10 @@ public class BaseInventory : IBaseInventory
 		if ( !CanAdd( ent ) )
 			return false;
 
+
 		if ( ent is not BaseCarriable carriable )
 			return false;
+
 
 		//
 		// Let the entity reject the inventory

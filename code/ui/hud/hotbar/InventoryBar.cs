@@ -2,6 +2,8 @@
 using Sandbox.UI;
 using System.Collections.Generic;
 
+namespace MyGame;
+
 public class InventoryBar : Panel
 {
 	readonly List<InventoryIcon> slots = new();
@@ -47,7 +49,7 @@ public class InventoryBar : Panel
 		inventoryIcon.SetClass( "active", player.ActiveChild == ent );
 	}
 
-	[Event.Client.BuildInput]
+	[GameEvent.Client.BuildInput]
 	public void ProcessClientInput()
 	{
 		var player = Game.LocalPawn as Player;
@@ -62,6 +64,8 @@ public class InventoryBar : Panel
 		//{
 		//	return;
 		//}
+
+		
 
 		if ( Input.Pressed( "slot1" ) ) SetActiveSlot( inventory, 0 );
 		if ( Input.Pressed( "slot2" ) ) SetActiveSlot( inventory, 1 );
@@ -80,13 +84,12 @@ public class InventoryBar : Panel
 	{
 		var player = Game.LocalPawn as Player;
 
+
 		if ( player == null )
 			return;
-
 		var ent = inventory.GetSlot( i );
 		if ( player.ActiveChild == ent )
 			return;
-
 		if ( ent == null )
 			return;
 

@@ -12,7 +12,7 @@
     <VoiceList/>
     <VoiceSpeaker/>
     <PlayerInfo/>
-    @if((Game.LocalPawn as Player).ActiveWeapon != null)
+    @if((Game.LocalPawn as Player).ActiveChild != null)
     {
         <WeaponInfo/>
     }

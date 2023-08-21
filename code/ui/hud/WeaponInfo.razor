@@ -6,10 +6,10 @@
 
 
 <root>
-    @if (weapon != null)
+    @if (activeWeapon != null)
     {
         <div class="info">
-            <h3>@weapon.CurrentAmmo/@weapon.MagSize | @weapon.ReserveAmmo</h3>
+            <h3>@activeWeapon.CurrentAmmo/@activeWeapon.MagSize | @activeWeapon.ReserveAmmo</h3>
         </div>
     }
 </root>
@@ -18,7 +18,7 @@
 {
     static WeaponInfo Instance;
     Player localPlayer = Game.LocalPawn as Player;
-    Weapon weapon;
+    Weapon activeWeapon;
 
 
 
@@ -30,11 +30,12 @@
         if(Instance == null)
         {
             Instance = this;
-            weapon = localPlayer.ActiveWeapon;
+            activeWeapon = localPlayer.ActiveChild as Weapon;
             WeaponInfo.UpdateInfo();
         }
-        if(weapon!=null){
-          StateHasChanged();
+        if (activeWeapon != null)
+        {
+            StateHasChanged();
         }
 
     }

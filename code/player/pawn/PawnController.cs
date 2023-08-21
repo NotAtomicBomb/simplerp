@@ -1,174 +1,200 @@
+﻿using System.Collections.Generic;
 using Sandbox;
-using System;
-using System.Collections.Generic;
 
-namespace MyGame;
-
-public class PawnController : EntityComponent<Pawn>
+namespace MyGame
 {
-	public int StepSize => 24;
-	public int GroundAngle => 45;
-	public int JumpSpeed => 300;
-	public float Gravity => 800f;
-
-	HashSet<string> ControllerEvents = new( StringComparer.OrdinalIgnoreCase );
-
-	bool Grounded => Entity.GroundEntity.IsValid();
-
-	public void Simulate( IClient cl )
+	public class PawnController : BaseNetworkable
 	{
-		ControllerEvents.Clear();
+		internal HashSet<string> Events;
+		internal HashSet<string> Tags;
 
-		var movement = Entity.InputDirection.Normal;
-		var angles = Entity.ViewAngles.WithPitch( 0 );
-		var moveVector = Rotation.From( angles ) * movement * 320f;
-		var groundEntity = CheckForGround();
+		public Entity Pawn { get; protected set; }
+		public IClient Client { get; protected set; }
+		public Vector3 Position { get; set; }
+		public Rotation Rotation { get; set; }
+		public Vector3 Velocity { get; set; }
+		public Rotation EyeRotation { get; set; }
+		public Vector3 EyeLocalPosition { get; set; }
+		public Vector3 BaseVelocity { get; set; }
+		public Entity GroundEntity { get; set; }
+		public Vector3 GroundNormal { get; set; }
 
-		if ( groundEntity.IsValid() )
+		public Vector3 WishVelocity { get; set; }
+
+		public void UpdateFromEntity( Entity entity )
 		{
-			if ( !Grounded )
+			Position = entity.Position;
+			Rotation = entity.Rotation;
+			Velocity = entity.Velocity;
+
+			if ( entity is Player player )
 			{
-				Entity.Velocity = Entity.Velocity.WithZ( 0 );
-				AddEvent( "grounded" );
+				EyeRotation = player.EyeRotation;
+				EyeLocalPosition = player.EyeLocalPosition;
 			}
 
-			Entity.Velocity = Accelerate( Entity.Velocity, moveVector.Normal, moveVector.Length, 200.0f * ( Input.Down( "run" ) ? 2.5f : 1f ), 7.5f );
-			Entity.Velocity = ApplyFriction( Entity.Velocity, 4.0f );
-		}
-		else
-		{
-			Entity.Velocity = Accelerate( Entity.Velocity, moveVector.Normal, moveVector.Length, 100, 20f );
-			Entity.Velocity += Vector3.Down * Gravity * Time.Delta;
+			BaseVelocity = entity.BaseVelocity;
+			GroundEntity = entity.GroundEntity;
+			WishVelocity = entity.Velocity;
 		}
 
-		if ( Input.Pressed( "jump" ) )
+		public void UpdateFromController( PawnController controller )
 		{
-			DoJump();
+			Pawn = controller.Pawn;
+			Client = controller.Client;
+
+			Position = controller.Position;
+			Rotation = controller.Rotation;
+			Velocity = controller.Velocity;
+			EyeRotation = controller.EyeRotation;
+			GroundEntity = controller.GroundEntity;
+			BaseVelocity = controller.BaseVelocity;
+			EyeLocalPosition = controller.EyeLocalPosition;
+			WishVelocity = controller.WishVelocity;
+			GroundNormal = controller.GroundNormal;
+
+			Events = controller.Events;
+			Tags = controller.Tags;
 		}
 
-		var mh = new MoveHelper( Entity.Position, Entity.Velocity );
-		mh.Trace = mh.Trace.Size( Entity.Hull ).Ignore( Entity );
-
-		if ( mh.TryMoveWithStep( Time.Delta, StepSize ) > 0 )
+		public void Finalize( Entity target )
 		{
-			if ( Grounded )
+			target.Position = Position;
+			target.Velocity = Velocity;
+			target.Rotation = Rotation;
+			target.GroundEntity = GroundEntity;
+			target.BaseVelocity = BaseVelocity;
+
+			if ( target is Player player )
 			{
-				mh.Position = StayOnGround( mh.Position );
+				player.EyeLocalPosition = EyeLocalPosition;
+				player.EyeRotation = EyeRotation;
 			}
-			Entity.Position = mh.Position;
-			Entity.Velocity = mh.Velocity;
 		}
 
-		Entity.GroundEntity = groundEntity;
-	}
-
-	void DoJump()
-	{
-		if ( Grounded )
+		/// <summary>
+		/// This is what your logic should be going in
+		/// </summary>
+		public virtual void Simulate()
 		{
-			Entity.Velocity = ApplyJump( Entity.Velocity, "jump" );
+			// Nothing
 		}
-	}
 
-	Entity CheckForGround()
-	{
-		if ( Entity.Velocity.z > 100f )
-			return null;
+		/// <summary>
+		/// This is called every frame on the client only
+		/// </summary>
+		public virtual void FrameSimulate()
+		{
+			Game.AssertClient();
+		}
 
-		var trace = Entity.TraceBBox( Entity.Position, Entity.Position + Vector3.Down, 2f );
+		/// <summary>
+		/// Call OnEvent for each event
+		/// </summary>
+		public virtual void RunEvents( PawnController additionalController )
+		{
+			if ( Events == null ) return;
 
-		if ( !trace.Hit )
-			return null;
+			foreach ( var e in Events )
+			{
+				OnEvent( e );
+				additionalController?.OnEvent( e );
+			}
+		}
 
-		if ( trace.Normal.Angle( Vector3.Up ) > GroundAngle )
-			return null;
+		/// <summary>
+		/// An event has been triggered - maybe handle it
+		/// </summary>
+		public virtual void OnEvent( string name )
+		{
 
-		return trace.Entity;
-	}
+		}
 
-	Vector3 ApplyFriction( Vector3 input, float frictionAmount )
-	{
-		float StopSpeed = 100.0f;
+		/// <summary>
+		/// Returns true if we have this event
+		/// </summary>
+		public bool HasEvent( string eventName )
+		{
+			if ( Events == null ) return false;
+			return Events.Contains( eventName );
+		}
 
-		var speed = input.Length;
-		if ( speed < 0.1f ) return input;
+		/// <summary>
+		/// </summary>
+		public bool HasTag( string tagName )
+		{
+			if ( Tags == null ) return false;
+			return Tags.Contains( tagName );
+		}
 
-		// Bleed off some speed, but if we have less than the bleed
-		// threshold, bleed the threshold amount.
-		float control = (speed < StopSpeed) ? StopSpeed : speed;
 
-		// Add the amount to the drop amount.
-		var drop = control * Time.Delta * frictionAmount;
+		/// <summary>
+		/// Allows the controller to pass events to other systems
+		/// while staying abstracted.
+		/// For example, it could pass a "jump" event, which could then
+		/// be picked up by the playeranimator to trigger a jump animation,
+		/// and picked up by the player to play a jump sound.
+		/// </summary>
+		public void AddEvent( string eventName )
+		{
+			// TODO - shall we allow passing data with the event?
 
-		// scale the velocity
-		float newspeed = speed - drop;
-		if ( newspeed < 0 ) newspeed = 0;
-		if ( newspeed == speed ) return input;
+			if ( Events == null ) Events = new HashSet<string>();
 
-		newspeed /= speed;
-		input *= newspeed;
+			if ( Events.Contains( eventName ) )
+				return;
 
-		return input;
-	}
+			Events.Add( eventName );
+		}
 
-	Vector3 Accelerate( Vector3 input, Vector3 wishdir, float wishspeed, float speedLimit, float acceleration )
-	{
-		if ( speedLimit > 0 && wishspeed > speedLimit )
-			wishspeed = speedLimit;
 
-		var currentspeed = input.Dot( wishdir );
-		var addspeed = wishspeed - currentspeed;
+		/// <summary>
+		/// </summary>
+		public void SetTag( string tagName )
+		{
+			// TODO - shall we allow passing data with the event?
 
-		if ( addspeed <= 0 )
-			return input;
+			Tags ??= new HashSet<string>();
 
-		var accelspeed = acceleration * Time.Delta * wishspeed;
+			if ( Tags.Contains( tagName ) )
+				return;
 
-		if ( accelspeed > addspeed )
-			accelspeed = addspeed;
+			Tags.Add( tagName );
+		}
 
-		input += wishdir * accelspeed;
+		/// <summary>
+		/// Allow the controller to tweak input. Empty by default.
+		/// </summary>
+		public virtual void BuildInput()
+		{
 
-		return input;
-	}
+		}
 
-	Vector3 ApplyJump( Vector3 input, string jumpType )
-	{
-		AddEvent( jumpType );
+		public void Simulate( IClient client, Entity pawn )
+		{
+			Events?.Clear();
+			Tags?.Clear();
 
-		return input + Vector3.Up * JumpSpeed;
-	}
+			Pawn = pawn;
+			Client = client;
 
-	Vector3 StayOnGround( Vector3 position )
-	{
-		var start = position + Vector3.Up * 2;
-		var end = position + Vector3.Down * StepSize;
+			UpdateFromEntity( pawn );
 
-		// See how far up we can go without getting stuck
-		var trace = Entity.TraceBBox( position, start );
-		start = trace.EndPosition;
+			Simulate();
 
-		// Now trace down from a known safe position
-		trace = Entity.TraceBBox( start, end );
+			Finalize( pawn );
+		}
+		
+		public void FrameSimulate( IClient client, Entity pawn )
+		{
+			Pawn = pawn;
+			Client = client;
 
-		if ( trace.Fraction <= 0 ) return position;
-		if ( trace.Fraction >= 1 ) return position;
-		if ( trace.StartedSolid ) return position;
-		if ( Vector3.GetAngle( Vector3.Up, trace.Normal ) > GroundAngle ) return position;
+			UpdateFromEntity( pawn );
 
-		return trace.EndPosition;
-	}
+			FrameSimulate();
 
-	public bool HasEvent( string eventName )
-	{
-		return ControllerEvents.Contains( eventName );
-	}
-
-	void AddEvent( string eventName )
-	{
-		if ( HasEvent( eventName ) )
-			return;
-
-		ControllerEvents.Add( eventName );
+			Finalize( pawn );
+		}
 	}
 }
