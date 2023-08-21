@@ -19,13 +19,14 @@
                     {
                         <div class="job-card flex-column" onclick="@(() => ConsoleSystem.Run("switch_job", collection.Key))">
                             <h3 class="job-text center-text">@collection.Value.Name</h3>
-                            @if (collection.Value.MaxPlayers != 0)
+                            @switch (collection.Value.MaxPlayers)
                             {
-                                <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers/@collection.Value.MaxPlayers</h4>
-                            }
-                            else
-                            {
-                                <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers</h4>
+                                case 0:
+                                    <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers</h4>
+                                    break;
+                                default:
+                                    <h4 class="center-text">@collection.Value.CurrentNumberOfPlayers/@collection.Value.MaxPlayers</h4>
+                                    break;
                             }
                         </div>   
                     }
@@ -42,16 +43,23 @@
     static JobMenu Instance;
     bool Hidden { get; set; } = true;
 
+    
 
-    public void ToggleUI() {
-
+    /// <summary>
+    /// Toggles JobMenu.
+    /// </summary>
+    void ToggleUI() {
         Hidden = !Hidden;
         Mouse.Position = new Vector2 { x = Screen.Width/2, y = Screen.Height/2 };
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Runs every tick.
+    /// </summary>
     public override void Tick() {
         base.Tick();
+
 
         if (Input.Pressed("jobtoggle")) 
         {

@@ -1,5 +1,6 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using System.Linq;
 
 @namespace MyGame
 @inherits RootPanel
@@ -18,9 +19,13 @@
     <JobMenu/>
     <PlayerList/>
     <Crosshair/>
+    <InventoryBar/>
 </root>
 
 @code
 {
-
+    public Hud()
+    {
+        Log.Info("Hud created.");
+    }
 }
