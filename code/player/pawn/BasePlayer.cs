@@ -111,13 +111,6 @@ public partial class BasePlayer : AnimatedEntity
 		base.Spawn();
 	}
 
-	public void DressFromClient( IClient cl )
-	{
-		var c = new ClothingContainer();
-		c.LoadFromClient( cl );
-		c.DressEntity( this );
-	}
-
 	/// <summary>
 	/// Called once the player's health reaches 0.
 	/// </summary>

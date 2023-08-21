@@ -16,6 +16,11 @@ namespace MyGame
 		public bool ThirdPersonCamera { get; set; }
 
 		/// <summary>
+		/// The clothing container is what dresses the citizen
+		/// </summary>
+		public ClothingContainer Clothing = new();
+
+		/// <summary>
 		/// How often to payout job wages
 		/// </summary>
 		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
@@ -49,6 +54,12 @@ namespace MyGame
 			Inventory = new Inventory( this );
 		}
 
+		public Player(IClient cl) : this()
+		{
+			Clothing.LoadFromClient(cl);
+			
+		}
+
 		public override void Respawn()
 		{
 			
@@ -71,6 +82,8 @@ namespace MyGame
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
+
+			Clothing.DressEntity( this );
 
 			Inventory.Add( new Pistol(), true );
 			Inventory.Add( new MP5());

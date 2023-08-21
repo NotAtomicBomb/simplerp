@@ -43,9 +43,8 @@ public partial class SimpleRp : GameManager
 		base.ClientJoined( client );
 
 		// Create a pawn for this client to play with
-		Player player = new();
+		Player player = new( client );
 		client.Pawn = player;
-		player.DressFromClient( client );
 		player.SwitchJob( Jobs["unemployed"], true);
 		player.Respawn();
 
