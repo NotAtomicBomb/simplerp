@@ -17,6 +17,8 @@ namespace MyGame
 		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
 		public bool FirstTimeJoining { get; internal set; } = true;
 
+		public IBaseInventory Inventory { get; protected set; }
+
 		/// <summary>
 		/// The current job of the player.
 		/// </summary>
@@ -39,6 +41,11 @@ namespace MyGame
 		/// </summary>
 		[Net, Predicted]
 		public TimeSince TimeSinceLastJobSwitch { get; protected set; } = 60f;
+
+		public Player()
+		{
+			Inventory = new Inventory( this );
+		}
 
 		public override void Simulate( IClient cl )
 		{
@@ -141,7 +148,8 @@ namespace MyGame
 		/// Switches the players job to the given job.
 		/// </summary>
 		/// <param name="job">The job you want to switch to.</param>
-		public void SwitchJob( Job job )
+		/// <param name="skipCooldown">Whether or not to skip the switch job cooldown.</param>
+		public void SwitchJob( Job job, bool skipCooldown = false )
 		{
 			if ( job == Job ) 
 			{
@@ -165,7 +173,7 @@ namespace MyGame
 					}
 					Job = job;
 					Job.CurrentNumberOfPlayers++;
-					TimeSinceLastJobSwitch = 0;
+					TimeSinceLastJobSwitch *= skipCooldown ? 1 : 0;
 					Log.Info( $"{Client.Name} switched jobs to {Job.Name}." );
 					SetInfo();
 				}
@@ -182,7 +190,7 @@ namespace MyGame
 				}
 				Job = job;
 				Job.CurrentNumberOfPlayers++;
-				TimeSinceLastJobSwitch = 0;
+				TimeSinceLastJobSwitch *= skipCooldown ? 1 : 0;
 				SetInfo();
 			}
 		}

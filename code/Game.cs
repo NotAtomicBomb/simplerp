@@ -46,7 +46,7 @@ public partial class SimpleRp : GameManager
 		Player player = new();
 		client.Pawn = player;
 		player.DressFromClient( client );
-		player.SwitchJob( Jobs["unemployed"] );
+		player.SwitchJob( Jobs["unemployed"], true);
 		player.Respawn();
 
 		Players.Add(player.Client.SteamId.ToString() , player );
