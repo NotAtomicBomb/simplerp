@@ -60,16 +60,20 @@ public partial class Weapon : BaseWeapon, IUse
 		if ( IsReloading )
 			return;
 
+		if ( ReserveAmmo == 0 )
+			return;
+
 		TimeSinceReload = 0;
 		IsReloading = true;
 
-		(Owner as AnimatedEntity)?.SetAnimParameter( "b_reload", true );
+		(Owner as Player)?.SetAnimParameter( "b_reload", true );
 
 		StartReloadEffects();
 	}
 
 	public override void Simulate( IClient owner )
 	{
+		
 		if ( TimeSinceDeployed < 0.6f )
 			return;
 
@@ -103,7 +107,7 @@ public partial class Weapon : BaseWeapon, IUse
 	[ClientRpc]
 	public virtual void StartReloadEffects()
 	{
-		ViewModelEntity?.SetAnimParameter( "b_reload", true );
+		ViewModelEntity?.SetAnimParameter( "reload", true );
 
 		// TODO - player third person model reload
 	}

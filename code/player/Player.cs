@@ -120,9 +120,14 @@ namespace MyGame
 		public override void TakeDamage( DamageInfo info )
 		{
 			SetInfo();
-			
 
-			if ( info.Hitbox.HasTag( "head" ) )
+			//if ( info.Attacker.IsValid() )
+			//{
+			//	if ( info.Attacker.Tags.Has( $"{PhysGun.GrabbedTag}{Client.SteamId}" ) ) // For when I import the PhysGun
+			//		return;
+			//}
+
+			if ( info.Hitbox.HasTag( "head" ) ) 
 			{
 				info.Damage *= 10.0f; // Multiplies the damage if it was a headshot
 			}
