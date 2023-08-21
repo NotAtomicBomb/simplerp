@@ -141,6 +141,11 @@ namespace MyGame
 		{
 			base.Simulate( cl );
 
+			if ( ActiveChildInput.IsValid() && ActiveChildInput.Owner == this )
+			{
+				ActiveChild = ActiveChildInput;
+			}
+
 			if ( LifeState != LifeState.Alive )
 				return;
 
@@ -352,22 +357,19 @@ namespace MyGame
 				PlayerInfo.UpdateInfo(To.Single(this)); // Ignore the error, it works.
 				PlayerList.UpdateInfo(); // Ignore the error, it works.
 				JobMenu.UpdateInfo(); // Ignore the error, it works.
+				WeaponInfo.UpdateInfo(To.Single(this));
 			}
 		}
 
-
 		public override void OnChildAdded( Entity child )
 		{
-			Inventory?.OnChildAdded(child );
+			Inventory?.OnChildAdded(child);
 		}
 
 		public override void OnChildRemoved( Entity child )
-		{
-			Inventory?.OnChildRemoved( child );
+		{ 
+			Inventory?.OnChildRemoved(child);
 		}
-
-
-
 
 		/// <summary>
 		/// Switches the players job to the given job.

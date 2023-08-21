@@ -35,6 +35,7 @@
         }
         if (activeWeapon != null)
         {
+            activeWeapon = localPlayer.ActiveChild as Weapon;
             StateHasChanged();
         }
 

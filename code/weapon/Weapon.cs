@@ -55,6 +55,19 @@ public partial class Weapon : BaseWeapon, IUse
 		}
 	}
 
+	public override bool CanPrimaryAttack()
+	{
+		if(CurrentAmmo == 0) return false;
+
+		return base.CanPrimaryAttack();
+	}
+
+	public override void AttackPrimary()
+	{
+		CurrentAmmo--;
+		base.AttackPrimary();
+	}
+
 	public override void Reload()
 	{
 		if ( IsReloading )

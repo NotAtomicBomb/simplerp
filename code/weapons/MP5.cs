@@ -60,6 +60,7 @@ partial class MP5 : Weapon
 		// Shoot the bullets
 		//
 		ShootBullet( 0.1f, 1.5f, 5.0f, 3.0f );
+		base.AttackPrimary();
 	}
 
 	public override void Simulate( IClient player )
