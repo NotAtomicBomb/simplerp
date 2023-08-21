@@ -57,12 +57,11 @@ namespace MyGame
 		public Player(IClient cl) : this()
 		{
 			Clothing.LoadFromClient(cl);
-			
 		}
 
 		public override void Respawn()
 		{
-			
+			SetInfo();
 
 			SetModel( "models/citizen/citizen.vmdl" );
 
@@ -120,19 +119,16 @@ namespace MyGame
 
 		public override void TakeDamage( DamageInfo info )
 		{
-			if ( info.Attacker.IsValid() )
-			{
-				//if ( info.Attacker.Tags.Has( $"{PhysGun.GrabbedTag}{Client.SteamId}" ) )
-					return;
-			}
+			SetInfo();
+			
 
 			if ( info.Hitbox.HasTag( "head" ) )
 			{
-				info.Damage *= 10.0f;
+				info.Damage *= 10.0f; // Multiplies the damage if it was a headshot
 			}
 
 			lastDamage = info;
-
+			
 			base.TakeDamage( info );
 		}
 
@@ -176,22 +172,6 @@ namespace MyGame
 				}
 			}
 
-			if ( Input.Released( "jump" ) )
-			{
-				if ( timeSinceJumpReleased < 0.3f )
-				{
-					if ( DevController is NoclipController )
-					{
-						DevController = null;
-					}
-					else
-					{
-						DevController = new NoclipController();
-					}
-				}
-
-				timeSinceJumpReleased = 0;
-			}
 
 			if ( Input.Released( "noclip" ) )
 			{
