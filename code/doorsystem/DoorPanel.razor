@@ -1,0 +1,35 @@
+﻿@using Sandbox.UI;
+@using System;
+@using Sandbox;
+
+@namespace MyGame
+@inherits WorldPanel
+@attribute [StyleSheet]
+
+
+<root>
+	<label>
+		@Name
+	</label>
+</root>
+
+@code{
+	public string Name { get; set; }
+	public DoorEntity Door { get; set; }
+
+	public DoorPanel(DoorEntity door){
+		Door = door;
+		Name = Door.Name;
+	}
+
+	public override void Tick()
+	{
+		StateHasChanged();
+
+		if(Door != null){
+			Transform = Door.Transform;
+			Rotation = Door.Rotation;
+		}
+		
+	}
+}

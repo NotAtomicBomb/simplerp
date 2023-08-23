@@ -141,11 +141,6 @@ namespace MyGame
 		{
 			base.Simulate( cl );
 
-			if ( ActiveChildInput.IsValid() && ActiveChildInput.Owner == this )
-			{
-				ActiveChild = ActiveChildInput;
-			}
-
 			if ( LifeState != LifeState.Alive )
 				return;
 
@@ -428,6 +423,7 @@ namespace MyGame
 		/// <param name="cl">The client to simulate on.</param>
 		public override void FrameSimulate( IClient cl )
 		{
+
 			Camera.Rotation = ViewAngles.ToRotation();
 			Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
 

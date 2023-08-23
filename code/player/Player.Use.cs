@@ -45,6 +45,7 @@ partial class Player
 		// Still no good? Bail.
 		if ( !IsValidUseEntity( ent ) ) return null;
 
+		Log.Info( ent );
 		return ent;
 	}
 

@@ -33,6 +33,8 @@ public partial class SimpleRp : GameManager
 			Game.RootPanel = new Hud();
 		}
 		LoadJobs();
+
+		
 	}
 
 	/// <summary>
@@ -70,6 +72,19 @@ public partial class SimpleRp : GameManager
 			player.Transform = tx;
 		}
 
+
+	}
+
+	public override void ClientSpawn()
+	{
+		base.ClientSpawn();
+
+		var Doors = Entity.All.OfType<DoorEntity>();
+		foreach ( var Door in Doors )
+		{
+			var doorPanel = new DoorPanel(Door);
+			Log.Info( doorPanel );
+		}
 	}
 
 
@@ -92,7 +107,7 @@ public partial class SimpleRp : GameManager
 	/// </summary>
 	private void LoadJobs()
 	{
-		Jobs =  FileSystem.Mounted.ReadJson<Dictionary<string, Job>>( "jobs.json" );
+		Jobs = FileSystem.Mounted.ReadJson<Dictionary<string, Job>>( "jobs.json" );
 	}
 }
 
