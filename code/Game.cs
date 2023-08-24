@@ -59,6 +59,8 @@ public partial class SimpleRp : GameManager
 			player.FirstTimeJoining = false;
 		}
 
+		player.LoadPlayerCards();
+
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one
@@ -83,7 +85,6 @@ public partial class SimpleRp : GameManager
 		foreach ( var Door in Doors )
 		{
 			var doorPanel = new DoorPanel(Door);
-			Log.Info( doorPanel );
 		}
 	}
 

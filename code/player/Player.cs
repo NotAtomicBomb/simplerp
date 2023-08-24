@@ -1,7 +1,7 @@
 using Sandbox;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.CompilerServices;
 
 namespace MyGame
 { 
@@ -25,6 +25,8 @@ namespace MyGame
 		/// </summary>
 		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
 		public bool FirstTimeJoining { get; internal set; } = true;
+
+		private PlayerCard playerCard { get; set; }
 
 		/// <summary>
 		/// The current job of the player.
@@ -85,7 +87,7 @@ namespace MyGame
 			Clothing.DressEntity( this );
 
 			Inventory.Add( new Pistol(), true );
-			Inventory.Add( new MP5());
+			Inventory.Add( new MP5() );
 
 			base.Respawn();
 		}
@@ -470,6 +472,19 @@ namespace MyGame
 				Camera.Position = EyePosition;
 				Camera.FirstPersonViewer = this;
 				Camera.Main.SetViewModelCamera( 90f );
+			}
+		}
+
+		[ClientRpc]
+		public void LoadPlayerCards()
+		{
+			var Players = Entity.All.OfType<Player>();
+			foreach ( var player in Players )
+			{
+				if( player.playerCard == null )
+				{
+					playerCard = new PlayerCard( player );
+				}
 			}
 		}
 

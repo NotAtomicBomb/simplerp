@@ -1,0 +1,40 @@
+﻿@using Sandbox.UI;
+@using System;
+@using Sandbox;
+
+@namespace MyGame
+@inherits WorldPanel
+@attribute [StyleSheet]
+
+
+<root>
+	<label>
+		@Player.Client.Name
+	</label>
+	<label>
+		Health: @Player.Health
+	</label>
+	<label>
+		@Player.Job.Name
+	</label>
+</root>
+
+@code{
+
+	public Player Player { get; set; }
+
+	public PlayerCard(Player player){
+		Player = player;
+	}
+
+	public override void Tick()
+	{
+		StateHasChanged();
+
+		if(Player != null){
+			Transform = Player.Transform;
+			Rotation = Player.Rotation;
+		}
+		
+	}
+}
