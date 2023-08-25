@@ -59,8 +59,6 @@ public partial class SimpleRp : GameManager
 			player.FirstTimeJoining = false;
 		}
 
-		player.LoadPlayerCards();
-
 		// Get all of the spawnpoints
 		var spawnpoints = Entity.All.OfType<SpawnPoint>();
 		// chose a random one
@@ -92,6 +90,7 @@ public partial class SimpleRp : GameManager
 	public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 	{
 		Player player = cl.Pawn as Player;
+
 		Players.Remove( player.Client.SteamId.ToString() );
 
 		base.ClientDisconnect( cl, reason );

@@ -32,9 +32,16 @@
 		StateHasChanged();
 
 		if(Player != null){
-			Transform = Player.Transform;
-			Rotation = Player.Rotation;
+			try
+			{
+				Transform = Player.Transform;
+				Rotation = Player.Rotation;
+			}
+			catch
+			{
+				this.Delete();
+			}
 		}
-		
+
 	}
 }

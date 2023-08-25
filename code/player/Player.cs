@@ -26,7 +26,7 @@ namespace MyGame
 		private float PayPeriod => 1800f; // in Seconds, 1800 = 30 mins
 		public bool FirstTimeJoining { get; internal set; } = true;
 
-		private PlayerCard playerCard { get; set; }
+		public PlayerCard playerCard { get; set; }
 
 		/// <summary>
 		/// The current job of the player.
@@ -475,18 +475,14 @@ namespace MyGame
 			}
 		}
 
-		[ClientRpc]
-		public void LoadPlayerCards()
+		public override void ClientSpawn()
 		{
-			var Players = Entity.All.OfType<Player>();
-			foreach ( var player in Players )
+			base.ClientSpawn();
+
+			if ( this.playerCard == null && this != (Game.LocalPawn as Player))
 			{
-				if( player.playerCard == null )
-				{
-					playerCard = new PlayerCard( player );
-				}
+				playerCard = new PlayerCard( this );
 			}
 		}
-
 	}
 }
